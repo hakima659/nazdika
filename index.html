@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -7,7 +6,17 @@
   <meta name="theme-color" content="#123c32">
   <meta name="description" content="نزدیکا؛ فضایی برای آشنایی محترمانه، ساخت پروفایل و پیدا کردن ارتباطی سازگار.">
   <meta name="robots" content="index,follow">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="نزدیکا">
+
   <title>نزدیکا | آشنایی واقعی، ارتباط محترمانه</title>
+
+  <link rel="manifest" href="./%D9%85%D8%A7%D9%86%DB%8C%D9%81%D8%B3%D8%AA.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-512.png">
+
   <style>
     :root {
       --green: #123c32;
@@ -19,7 +28,14 @@
       --border: #e4e9e1;
       --white: #fff;
     }
+
     * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
     body {
       margin: 0;
       font-family: Tahoma, Arial, sans-serif;
@@ -27,10 +43,16 @@
       color: var(--text);
       line-height: 1.9;
     }
+
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
     a { color: inherit; text-decoration: none; }
-    .wrap { width: min(1100px, 92%); margin: auto; }
+
+    .wrap {
+      width: min(1100px, 92%);
+      margin: auto;
+    }
+
     header {
       background: var(--white);
       border-bottom: 1px solid var(--border);
@@ -38,6 +60,7 @@
       top: 0;
       z-index: 10;
     }
+
     .nav {
       min-height: 72px;
       display: flex;
@@ -47,8 +70,21 @@
       flex-wrap: wrap;
       padding: 12px 0;
     }
-    .brand { font-size: 23px; font-weight: bold; color: var(--green); }
-    .links { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+
+    .brand {
+      font-size: 23px;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 14px;
+    }
+
     .btn {
       border: 0;
       border-radius: 13px;
@@ -58,9 +94,20 @@
       font-weight: bold;
       display: inline-block;
     }
+
     .btn:hover { background: var(--green2); }
-    .btn-light { background: var(--lime); color: var(--green); }
-    .btn-outline { background: white; color: var(--green); border: 1px solid var(--border); }
+
+    .btn-light {
+      background: var(--lime);
+      color: var(--green);
+    }
+
+    .btn-outline {
+      background: white;
+      color: var(--green);
+      border: 1px solid var(--border);
+    }
+
     .hero {
       margin-top: 28px;
       padding: 48px 26px;
@@ -69,9 +116,25 @@
       color: white;
       overflow: hidden;
     }
-    .hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center; }
-    .hero h1 { font-size: clamp(27px, 5vw, 43px); line-height: 1.6; margin: 0 0 14px; }
-    .hero p { color: #e0e9e2; max-width: 570px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(27px, 5vw, 43px);
+      line-height: 1.6;
+      margin: 0 0 14px;
+    }
+
+    .hero p {
+      color: #e0e9e2;
+      max-width: 570px;
+    }
+
     .hero-art {
       background: #1d5144;
       border: 1px solid #477263;
@@ -79,13 +142,40 @@
       padding: 25px;
       text-align: center;
     }
-    .heart { font-size: 75px; line-height: 1.5; }
-    .art-label { background: #fff; color: var(--green); border-radius: 14px; padding: 12px; margin-top: 12px; }
+
+    .heart {
+      font-size: 75px;
+      line-height: 1.5;
+    }
+
+    .art-label {
+      background: #fff;
+      color: var(--green);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
     section { padding: 38px 0; }
+
     .section-head { margin-bottom: 20px; }
-    .section-head h2 { margin: 0 0 5px; font-size: 25px; }
-    .muted { color: var(--muted); font-size: 14px; }
-    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+    .section-head h2 {
+      margin: 0 0 5px;
+      font-size: 25px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
     .card {
       background: white;
       border: 1px solid var(--border);
@@ -93,11 +183,29 @@
       padding: 21px;
       min-width: 0;
     }
-    .price { font-size: 27px; font-weight: bold; color: var(--green); margin: 10px 0; }
-    .price small { font-size: 13px; font-weight: normal; color: var(--muted); }
-    .features { padding-right: 20px; font-size: 14px; }
+
+    .price {
+      font-size: 27px;
+      font-weight: bold;
+      color: var(--green);
+      margin: 10px 0;
+    }
+
+    .price small {
+      font-size: 13px;
+      font-weight: normal;
+      color: var(--muted);
+    }
+
+    .features {
+      padding-right: 20px;
+      font-size: 14px;
+    }
+
     .features li { margin: 7px 0; }
+
     .popular { border: 2px solid var(--green); }
+
     .tag {
       display: inline-block;
       background: #eff5d8;
@@ -106,9 +214,21 @@
       border-radius: 20px;
       font-size: 12px;
     }
-    .form-card { max-width: 580px; margin: auto; }
+
+    .form-card {
+      max-width: 580px;
+      margin: auto;
+    }
+
     .field { margin: 13px 0; }
-    label { display: block; font-size: 14px; margin-bottom: 6px; font-weight: bold; }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
     input, select, textarea {
       width: 100%;
       padding: 12px;
@@ -118,7 +238,17 @@
       color: var(--text);
       outline-color: var(--green2);
     }
-    textarea { min-height: 100px; resize: vertical; }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+      accent-color: var(--green);
+    }
+
     .notice {
       background: #fff8e7;
       color: #72561c;
@@ -128,11 +258,34 @@
       font-size: 13px;
       margin: 14px 0;
     }
+
     .hidden { display: none !important; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-    footer { background: #102e27; color: white; margin-top: 30px; padding: 28px 0; }
-    footer p { color: #d1dfd7; font-size: 13px; }
-    .toast { margin-top: 12px; font-size: 14px; overflow-wrap: anywhere; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    footer {
+      background: #102e27;
+      color: white;
+      margin-top: 30px;
+      padding: 28px 0;
+    }
+
+    footer p {
+      color: #d1dfd7;
+      font-size: 13px;
+    }
+
+    .toast {
+      margin-top: 12px;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
     @media (max-width: 720px) {
       .hero-grid, .grid { grid-template-columns: 1fr; }
       .hero { padding: 30px 20px; }
@@ -142,6 +295,7 @@
     }
   </style>
 </head>
+
 <body>
 <header>
   <div class="wrap nav">
@@ -205,6 +359,7 @@
       <h2>پلن‌های نزدیکا</h2>
       <p class="muted">اشتراک‌های پولی برای ۳۰ روز تعریف شده‌اند.</p>
     </div>
+
     <div class="grid">
       <article class="card">
         <h3>رایگان</h3>
@@ -216,6 +371,7 @@
         </ul>
         <a class="btn btn-outline" href="#account">شروع رایگان</a>
       </article>
+
       <article class="card popular">
         <span class="tag">انتخاب اقتصادی</span>
         <h3>پلاس</h3>
@@ -225,8 +381,9 @@
           <li>مدت اشتراک ۳۰ روز</li>
           <li>فعال‌سازی پس از تأیید پرداخت</li>
         </ul>
-        <button class="btn" onclick="choosePlan('plus')">درخواست پلاس</button>
+        <button class="btn" type="button" onclick="choosePlan('plus')">درخواست پلاس</button>
       </article>
+
       <article class="card">
         <h3>ویژه</h3>
         <div class="price">۳۹۹٬۰۰۰ <small>تومان / ۳۰ روز</small></div>
@@ -235,12 +392,13 @@
           <li>مدت اشتراک ۳۰ روز</li>
           <li>فعال‌سازی پس از تأیید پرداخت</li>
         </ul>
-        <button class="btn" onclick="choosePlan('special')">درخواست ویژه</button>
+        <button class="btn" type="button" onclick="choosePlan('special')">درخواست ویژه</button>
       </article>
     </div>
+
     <div class="notice">
-      پرداخت و فعال‌سازی اشتراک در این نسخه هنوز به سرور متصل نیست.
-      هیچ پرداختی انجام ندهید و رسید یا اطلاعات بانکی وارد نکنید.
+      پرداخت و فعال‌سازی اشتراک هنوز به سرور متصل نیست.
+      تا زمان تکمیل و آزمایش پرداخت واقعی، هیچ وجهی واریز نکنید.
     </div>
   </section>
 
@@ -248,12 +406,11 @@
     <div class="card form-card">
       <div class="section-head">
         <h2>حساب کاربری</h2>
-        <p class="muted">این فرم تا اتصال بک‌اند، ثبت‌نام واقعی انجام نمی‌دهد.</p>
+        <p class="muted">فرم پس از اتصال و آزمایش سرور فعال خواهد شد.</p>
       </div>
 
       <div class="notice">
-        برای حفاظت از اطلاعاتت، این نسخه اطلاعات را به سرور ارسال نمی‌کند.
-        رمز عبور واقعی خود را در این فرم آزمایشی وارد نکن.
+        این نسخه هنوز فرم را به سرور ارسال نمی‌کند. رمز واقعی خود را تا فعال‌شدن اتصال وارد نکنید.
       </div>
 
       <form id="accountForm">
@@ -264,38 +421,47 @@
             <option value="login">ورود به حساب</option>
           </select>
         </div>
+
         <div class="field" id="nameField">
           <label for="displayName">نام نمایشی</label>
           <input id="displayName" maxlength="40" placeholder="مثلاً سارا" autocomplete="nickname">
         </div>
+
         <div class="field">
           <label for="phone">شماره موبایل</label>
-          <input id="phone" inputmode="tel" autocomplete="tel" maxlength="15" placeholder="شماره موبایل">
+          <input id="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="15" placeholder="شماره موبایل">
         </div>
-        <div class="field">
+
+        <div class="field" id="ageField">
           <label for="age">سن</label>
           <input id="age" type="number" min="18" max="100" placeholder="سن شما">
         </div>
-        <div class="field">
+
+        <div class="field" id="cityField">
           <label for="city">شهر</label>
           <input id="city" maxlength="60" placeholder="شهر محل سکونت">
         </div>
-        <div class="field">
+
+        <div class="field" id="aboutField">
           <label for="about">معرفی کوتاه</label>
           <textarea id="about" maxlength="500" placeholder="علایق و ویژگی‌های خودت را بنویس"></textarea>
         </div>
+
         <div class="field">
           <label for="password">رمز عبور</label>
           <input id="password" type="password" autocomplete="new-password" minlength="8" placeholder="حداقل ۸ نویسه">
         </div>
+
         <label style="display:flex;gap:9px;align-items:flex-start;font-weight:normal">
-          <input id="adult" type="checkbox" style="width:auto;margin-top:7px">
+          <input id="adult" type="checkbox" style="margin-top:7px">
           تأیید می‌کنم حداقل ۱۸ سال دارم و قوانین و حریم خصوصی را می‌پذیرم.
         </label>
+
         <div class="actions">
           <button class="btn" type="submit">ادامه</button>
           <button class="btn btn-outline" type="reset">پاک کردن فرم</button>
         </div>
+
         <p id="formMessage" class="toast" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -306,9 +472,9 @@
       <h2>امنیت و حریم خصوصی</h2>
       <ul class="features">
         <li>نزدیکا برای افراد ۱۸ سال به بالا در نظر گرفته شده است.</li>
-        <li>شماره موبایل نباید بدون رضایت کاربر به دیگران نمایش داده شود.</li>
-        <li>گزارش تخلف، مسدودسازی کاربران و حذف حساب باید در نسخه عملیاتی پیاده‌سازی شوند.</li>
-        <li>اطلاعات حساس و اطلاعات پرداخت نباید در کد عمومی سایت قرار بگیرند.</li>
+        <li>شماره موبایل بدون رضایت کاربر به دیگران نمایش داده نمی‌شود.</li>
+        <li>گزارش تخلف، مسدودسازی و حذف حساب باید در نسخه عملیاتی آزمایش شوند.</li>
+        <li>اطلاعات حساس و پرداخت نباید در کد عمومی سایت قرار بگیرند.</li>
       </ul>
     </div>
   </section>
@@ -318,7 +484,7 @@
   <div class="wrap">
     <div class="brand" style="color:#d9f36a">نزدیکا ✦</div>
     <p>فضایی برای آشنایی محترمانه و انتخاب آگاهانه.</p>
-    <p>نسخه اولیه سایت — خدمات حساب کاربری، چت و اشتراک پس از اتصال سرور فعال خواهند شد.</p>
+    <p>ثبت‌نام، گفت‌وگو و اشتراک پس از اتصال و آزمایش سرور فعال خواهند شد.</p>
     <p>© <span id="year"></span> نزدیکا</p>
   </div>
 </footer>
@@ -328,13 +494,26 @@
 
   const mode = document.getElementById("mode");
   const nameField = document.getElementById("nameField");
+  const ageField = document.getElementById("ageField");
+  const cityField = document.getElementById("cityField");
+  const aboutField = document.getElementById("aboutField");
   const formMessage = document.getElementById("formMessage");
 
-  mode.addEventListener("change", function () {
-    nameField.classList.toggle("hidden", mode.value === "login");
-  });
+  function updateFormMode() {
+    const isLogin = mode.value === "login";
+    nameField.classList.toggle("hidden", isLogin);
+    ageField.classList.toggle("hidden", isLogin);
+    cityField.classList.toggle("hidden", isLogin);
+    aboutField.classList.toggle("hidden", isLogin);
+    document.getElementById("password").setAttribute(
+      "autocomplete", isLogin ? "current-password" : "new-password"
+    );
+  }
 
-  document.getElementById("accountForm").addEventListener("submit", function (event) {
+  mode.addEventListener("change", updateFormMode);
+  updateFormMode();
+
+  document.getElementById("accountForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
     const age = Number(document.getElementById("age").value);
@@ -342,7 +521,7 @@
     const password = document.getElementById("password").value;
     const adult = document.getElementById("adult").checked;
 
-    if (!adult || age < 18 || age > 100) {
+    if (!adult) {
       formMessage.textContent = "برای ادامه باید تأیید کنید که حداقل ۱۸ سال دارید.";
       return;
     }
@@ -352,8 +531,22 @@
       return;
     }
 
+    if (mode.value === "register") {
+      const name = document.getElementById("displayName").value.trim();
+
+      if (name.length < 2) {
+        formMessage.textContent = "نام نمایشی را وارد کنید.";
+        return;
+      }
+
+      if (!Number.isInteger(age) || age < 18 || age > 100) {
+        formMessage.textContent = "ثبت‌نام فقط برای افراد ۱۸ سال به بالا است.";
+        return;
+      }
+    }
+
     formMessage.textContent =
-      "فرم ظاهری آماده است؛ ثبت‌نام و ورود واقعی هنوز فعال نیست. تا اتصال سرور، اطلاعات شما ذخیره یا ارسال نشد.";
+      "اتصال واقعی حساب هنوز تکمیل نشده است؛ اطلاعات واردشده ذخیره یا ارسال نشد.";
   });
 
   function choosePlan(plan) {
@@ -361,7 +554,7 @@
     const names = { plus: "پلاس", special: "ویژه" };
     formMessage.textContent =
       "پلن انتخاب‌شده: " + names[plan] +
-      ". درخواست اشتراک پس از راه‌اندازی سرور فعال می‌شود؛ فعلاً پرداخت نکنید.";
+      ". پرداخت تا تکمیل و آزمایش سامانه فعال نیست.";
   }
 </script>
 </body>
