@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123c32">
+  <meta name="description" content="نزدیکا؛ فضایی برای آشنایی محترمانه، ساخت پروفایل و پیدا کردن ارتباطی سازگار.">
+  <meta name="robots" content="index,follow">
+  <title>نزدیکا | آشنایی واقعی، ارتباط محترمانه</title>
+  <style>
+    :root {
+      --green: #123c32;
+      --green2: #1d5a49;
+      --lime: #d9f36a;
+      --bg: #f7f8f4;
+      --text: #17251f;
+      --muted: #69766f;
+      --border: #e4e9e1;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1100px, 92%); margin: auto; }
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+    }
+    .brand { font-size: 23px; font-weight: bold; color: var(--green); }
+    .links { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+    .btn {
+      border: 0;
+      border-radius: 13px;
+      padding: 11px 18px;
+      background: var(--green);
+      color: white;
+      font-weight: bold;
+      display: inline-block;
+    }
+    .btn:hover { background: var(--green2); }
+    .btn-light { background: var(--lime); color: var(--green); }
+    .btn-outline { background: white; color: var(--green); border: 1px solid var(--border); }
+    .hero {
+      margin-top: 28px;
+      padding: 48px 26px;
+      border-radius: 26px;
+      background: var(--green);
+      color: white;
+      overflow: hidden;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center; }
+    .hero h1 { font-size: clamp(27px, 5vw, 43px); line-height: 1.6; margin: 0 0 14px; }
+    .hero p { color: #e0e9e2; max-width: 570px; }
+    .hero-art {
+      background: #1d5144;
+      border: 1px solid #477263;
+      border-radius: 24px;
+      padding: 25px;
+      text-align: center;
+    }
+    .heart { font-size: 75px; line-height: 1.5; }
+    .art-label { background: #fff; color: var(--green); border-radius: 14px; padding: 12px; margin-top: 12px; }
+    section { padding: 38px 0; }
+    .section-head { margin-bottom: 20px; }
+    .section-head h2 { margin: 0 0 5px; font-size: 25px; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 21px;
+      min-width: 0;
+    }
+    .price { font-size: 27px; font-weight: bold; color: var(--green); margin: 10px 0; }
+    .price small { font-size: 13px; font-weight: normal; color: var(--muted); }
+    .features { padding-right: 20px; font-size: 14px; }
+    .features li { margin: 7px 0; }
+    .popular { border: 2px solid var(--green); }
+    .tag {
+      display: inline-block;
+      background: #eff5d8;
+      color: var(--green);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    .form-card { max-width: 580px; margin: auto; }
+    .field { margin: 13px 0; }
+    label { display: block; font-size: 14px; margin-bottom: 6px; font-weight: bold; }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dce3db;
+      border-radius: 12px;
+      background: white;
+      color: var(--text);
+      outline-color: var(--green2);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .notice {
+      background: #fff8e7;
+      color: #72561c;
+      border: 1px solid #f2e3b9;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin: 14px 0;
+    }
+    .hidden { display: none !important; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+    footer { background: #102e27; color: white; margin-top: 30px; padding: 28px 0; }
+    footer p { color: #d1dfd7; font-size: 13px; }
+    .toast { margin-top: 12px; font-size: 14px; overflow-wrap: anywhere; }
+    @media (max-width: 720px) {
+      .hero-grid, .grid { grid-template-columns: 1fr; }
+      .hero { padding: 30px 20px; }
+      .links { gap: 11px; font-size: 13px; }
+      .nav { align-items: flex-start; }
+      .hero-art { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#home">نزدیکا ✦</a>
+    <nav class="links" aria-label="منوی اصلی">
+      <a href="#how">نحوه کار</a>
+      <a href="#plans">اشتراک‌ها</a>
+      <a href="#account">حساب کاربری</a>
+    </nav>
+    <a class="btn btn-light" href="#account">شروع آشنایی</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" id="home">
+    <div class="hero-grid">
+      <div>
+        <span class="tag">ارتباط محترمانه، انتخاب آگاهانه</span>
+        <h1>نزدیکا؛ برای آشنایی‌هایی که معنا دارند 💚</h1>
+        <p>
+          پروفایل خودت را بساز، علایقت را معرفی کن و برای پیدا کردن
+          ارتباطی سازگار قدم بردار. حریم خصوصی و رضایت دوطرفه مهم‌اند.
+        </p>
+        <div class="actions">
+          <a class="btn btn-light" href="#account">ساخت حساب کاربری</a>
+          <a class="btn btn-outline" href="#plans">مشاهده اشتراک‌ها</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="تصویر نمادین نزدیکا">
+        <div class="heart">💚</div>
+        <h3>یک شروع تازه</h3>
+        <div class="art-label">اول شناخت، بعد ارتباط</div>
+        <div class="art-label">با احترام به انتخاب یکدیگر</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="section-head">
+      <h2>نزدیکا چطور کار می‌کند؟</h2>
+      <p class="muted">مسیر آشنایی باید روشن، محترمانه و امن باشد.</p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3>۱. معرفی خودت</h3>
+        <p class="muted">اطلاعات و علایق مناسب برای پروفایل را وارد کن.</p>
+      </article>
+      <article class="card">
+        <h3>۲. انتخاب آگاهانه</h3>
+        <p class="muted">پروفایل‌ها را بررسی کن و فقط در صورت تمایل علاقه نشان بده.</p>
+      </article>
+      <article class="card">
+        <h3>۳. ارتباط دوطرفه</h3>
+        <p class="muted">گفت‌وگو باید با رضایت دو طرف و پس از فعال‌شدن سامانه انجام شود.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="plans">
+    <div class="section-head">
+      <h2>پلن‌های نزدیکا</h2>
+      <p class="muted">اشتراک‌های پولی برای ۳۰ روز تعریف شده‌اند.</p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3>رایگان</h3>
+        <div class="price">۰ <small>تومان</small></div>
+        <ul class="features">
+          <li>ساخت حساب پایه</li>
+          <li>تکمیل پروفایل</li>
+          <li>امکانات محدود</li>
+        </ul>
+        <a class="btn btn-outline" href="#account">شروع رایگان</a>
+      </article>
+      <article class="card popular">
+        <span class="tag">انتخاب اقتصادی</span>
+        <h3>پلاس</h3>
+        <div class="price">۱۹۹٬۰۰۰ <small>تومان / ۳۰ روز</small></div>
+        <ul class="features">
+          <li>امکانات بیشتر نسبت به رایگان</li>
+          <li>مدت اشتراک ۳۰ روز</li>
+          <li>فعال‌سازی پس از تأیید پرداخت</li>
+        </ul>
+        <button class="btn" onclick="choosePlan('plus')">درخواست پلاس</button>
+      </article>
+      <article class="card">
+        <h3>ویژه</h3>
+        <div class="price">۳۹۹٬۰۰۰ <small>تومان / ۳۰ روز</small></div>
+        <ul class="features">
+          <li>امکانات ویژه تعریف‌شده در سامانه</li>
+          <li>مدت اشتراک ۳۰ روز</li>
+          <li>فعال‌سازی پس از تأیید پرداخت</li>
+        </ul>
+        <button class="btn" onclick="choosePlan('special')">درخواست ویژه</button>
+      </article>
+    </div>
+    <div class="notice">
+      پرداخت و فعال‌سازی اشتراک در این نسخه هنوز به سرور متصل نیست.
+      هیچ پرداختی انجام ندهید و رسید یا اطلاعات بانکی وارد نکنید.
+    </div>
+  </section>
+
+  <section id="account">
+    <div class="card form-card">
+      <div class="section-head">
+        <h2>حساب کاربری</h2>
+        <p class="muted">این فرم تا اتصال بک‌اند، ثبت‌نام واقعی انجام نمی‌دهد.</p>
+      </div>
+
+      <div class="notice">
+        برای حفاظت از اطلاعاتت، این نسخه اطلاعات را به سرور ارسال نمی‌کند.
+        رمز عبور واقعی خود را در این فرم آزمایشی وارد نکن.
+      </div>
+
+      <form id="accountForm">
+        <div class="field">
+          <label for="mode">نوع درخواست</label>
+          <select id="mode">
+            <option value="register">ساخت حساب</option>
+            <option value="login">ورود به حساب</option>
+          </select>
+        </div>
+        <div class="field" id="nameField">
+          <label for="displayName">نام نمایشی</label>
+          <input id="displayName" maxlength="40" placeholder="مثلاً سارا" autocomplete="nickname">
+        </div>
+        <div class="field">
+          <label for="phone">شماره موبایل</label>
+          <input id="phone" inputmode="tel" autocomplete="tel" maxlength="15" placeholder="شماره موبایل">
+        </div>
+        <div class="field">
+          <label for="age">سن</label>
+          <input id="age" type="number" min="18" max="100" placeholder="سن شما">
+        </div>
+        <div class="field">
+          <label for="city">شهر</label>
+          <input id="city" maxlength="60" placeholder="شهر محل سکونت">
+        </div>
+        <div class="field">
+          <label for="about">معرفی کوتاه</label>
+          <textarea id="about" maxlength="500" placeholder="علایق و ویژگی‌های خودت را بنویس"></textarea>
+        </div>
+        <div class="field">
+          <label for="password">رمز عبور</label>
+          <input id="password" type="password" autocomplete="new-password" minlength="8" placeholder="حداقل ۸ نویسه">
+        </div>
+        <label style="display:flex;gap:9px;align-items:flex-start;font-weight:normal">
+          <input id="adult" type="checkbox" style="width:auto;margin-top:7px">
+          تأیید می‌کنم حداقل ۱۸ سال دارم و قوانین و حریم خصوصی را می‌پذیرم.
+        </label>
+        <div class="actions">
+          <button class="btn" type="submit">ادامه</button>
+          <button class="btn btn-outline" type="reset">پاک کردن فرم</button>
+        </div>
+        <p id="formMessage" class="toast" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <section id="safety">
+    <div class="card">
+      <h2>امنیت و حریم خصوصی</h2>
+      <ul class="features">
+        <li>نزدیکا برای افراد ۱۸ سال به بالا در نظر گرفته شده است.</li>
+        <li>شماره موبایل نباید بدون رضایت کاربر به دیگران نمایش داده شود.</li>
+        <li>گزارش تخلف، مسدودسازی کاربران و حذف حساب باید در نسخه عملیاتی پیاده‌سازی شوند.</li>
+        <li>اطلاعات حساس و اطلاعات پرداخت نباید در کد عمومی سایت قرار بگیرند.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="color:#d9f36a">نزدیکا ✦</div>
+    <p>فضایی برای آشنایی محترمانه و انتخاب آگاهانه.</p>
+    <p>نسخه اولیه سایت — خدمات حساب کاربری، چت و اشتراک پس از اتصال سرور فعال خواهند شد.</p>
+    <p>© <span id="year"></span> نزدیکا</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const mode = document.getElementById("mode");
+  const nameField = document.getElementById("nameField");
+  const formMessage = document.getElementById("formMessage");
+
+  mode.addEventListener("change", function () {
+    nameField.classList.toggle("hidden", mode.value === "login");
+  });
+
+  document.getElementById("accountForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const age = Number(document.getElementById("age").value);
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+    const adult = document.getElementById("adult").checked;
+
+    if (!adult || age < 18 || age > 100) {
+      formMessage.textContent = "برای ادامه باید تأیید کنید که حداقل ۱۸ سال دارید.";
+      return;
+    }
+
+    if (!phone || password.length < 8) {
+      formMessage.textContent = "شماره موبایل و رمز عبور حداقل ۸ نویسه‌ای را بررسی کنید.";
+      return;
+    }
+
+    formMessage.textContent =
+      "فرم ظاهری آماده است؛ ثبت‌نام و ورود واقعی هنوز فعال نیست. تا اتصال سرور، اطلاعات شما ذخیره یا ارسال نشد.";
+  });
+
+  function choosePlan(plan) {
+    document.getElementById("account").scrollIntoView({ behavior: "smooth" });
+    const names = { plus: "پلاس", special: "ویژه" };
+    formMessage.textContent =
+      "پلن انتخاب‌شده: " + names[plan] +
+      ". درخواست اشتراک پس از راه‌اندازی سرور فعال می‌شود؛ فعلاً پرداخت نکنید.";
+  }
+</script>
+</body>
+</html>
