@@ -1,0 +1,12 @@
+{
+  "name": "نزدیکا",
+  "short_name": "نزدیکا",
+  "description": "آشنایی محترمانه و امن",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#123c32"
+}
