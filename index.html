@@ -1,444 +1,427 @@
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "https://hakima659.github.io",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  "Content-Type": "application/json; charset=utf-8",
-  "Cache-Control": "no-store"
-};
-
-const encoder = new TextEncoder();
-const SESSION_SECONDS = 7 * 24 * 60 * 60;
-const ONLINE_SECONDS = 120;
-
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: CORS_HEADERS
-  });
-
-function normalizePhone(value) {
-  let phone = String(value || "").replace(/[\s()-]/g, "");
-
-  if (phone.startsWith("+98")) phone = "0" + phone.slice(3);
-  if (phone.startsWith("0098")) phone = "0" + phone.slice(4);
-  if (/^9\d{9}$/.test(phone)) phone = "0" + phone;
-
-  return phone;
-}
-
-function validIranPhone(phone) {
-  return /^09\d{9}$/.test(phone);
-}
-
-function toBase64(bytes) {
-  let binary = "";
-  for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary);
-}
-
-function fromBase64(value) {
-  return Uint8Array.from(atob(value), c => c.charCodeAt(0));
-}
-
-function base64Url(bytes) {
-  return toBase64(bytes)
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
-}
-
-async function sha256(value) {
-  const digest = await crypto.subtle.digest(
-    "SHA-256",
-    encoder.encode(value)
-  );
-
-  return toBase64(new Uint8Array(digest));
-}
-
-async function hashPassword(password, salt) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(password),
-    { name: "PBKDF2" },
-    false,
-    ["deriveBits"]
-  );
-
-  const bits = await crypto.subtle.deriveBits(
-    {
-      name: "PBKDF2",
-      salt,
-      iterations: 100000,
-      hash: "SHA-256"
-    },
-    key,
-    256
-  );
-
-  return toBase64(new Uint8Array(bits));
-}
-
-async function readBody(request) {
-  try {
-    const body = await request.json();
-
-    if (!body || typeof body !== "object" || Array.isArray(body)) {
-      return null;
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123c32">
+  <meta name="description" content="نزدیکا؛ فضایی برای آشنایی محترمانه، ساخت پروفایل و پیدا کردن ارتباطی سازگار.">
+  <title>نزدیکا ✦ | آشنایی محترمانه</title>
+  <style>
+    :root {
+      --green: #123c32;
+      --lime: #d9f36a;
+      --bg: #f7f9f5;
+      --text: #20332c;
+      --muted: #68766f;
+      --white: #fff;
+      --border: #e3e9e1;
     }
 
-    return body;
-  } catch {
-    return null;
-  }
-}
+    * { box-sizing: border-box; }
 
-async function initializeDB(db) {
-  await db.batch([
-    db.prepare(`CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      phone TEXT NOT NULL UNIQUE,
-      display_name TEXT NOT NULL,
-      age INTEGER NOT NULL,
-      city TEXT NOT NULL,
-      about TEXT NOT NULL DEFAULT '',
-      salt TEXT NOT NULL,
-      password_hash TEXT NOT NULL,
-      plan TEXT NOT NULL DEFAULT 'free',
-      plan_until TEXT,
-      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      last_seen INTEGER NOT NULL DEFAULT 0
-    )`),
+    html { scroll-behavior: smooth; }
 
-    db.prepare(`CREATE TABLE IF NOT EXISTS sessions (
-      token_hash TEXT PRIMARY KEY,
-      user_id INTEGER NOT NULL,
-      expires_at INTEGER NOT NULL,
-      FOREIGN KEY(user_id) REFERENCES users(id)
-    )`),
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+    }
 
-    db.prepare(`CREATE TABLE IF NOT EXISTS subscription_requests (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
-      plan TEXT NOT NULL,
-      amount INTEGER NOT NULL,
-      reference TEXT NOT NULL,
-      status TEXT NOT NULL DEFAULT 'pending',
-      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(user_id) REFERENCES users(id)
-    )`)
-  ]);
-}
+    a { color: inherit; text-decoration: none; }
 
-function newToken() {
-  return base64Url(crypto.getRandomValues(new Uint8Array(32)));
-}
+    button, input, select, textarea {
+      font: inherit;
+    }
 
-async function getUser(request, db) {
-  const auth = request.headers.get("Authorization") || "";
-  const match = auth.match(/^Bearer ([A-Za-z0-9_-]{40,100})$/);
+    button, .button {
+      cursor: pointer;
+    }
 
-  if (!match) return null;
+    .container {
+      width: min(1080px, 92%);
+      margin: auto;
+    }
 
-  const tokenHash = await sha256(match[1]);
-  const now = Math.floor(Date.now() / 1000);
+    header {
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-  const session = await db.prepare(`
-    SELECT
-      users.id,
-      users.phone,
-      users.display_name,
-      users.age,
-      users.city,
-      users.about,
-      users.plan,
-      users.plan_until
-    FROM sessions
-    JOIN users ON users.id = sessions.user_id
-    WHERE sessions.token_hash = ?
-      AND sessions.expires_at > ?
-  `).bind(tokenHash, now).first();
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+    }
 
-  return session || null;
-}
+    .brand {
+      font-size: 23px;
+      font-weight: bold;
+      color: var(--green);
+    }
 
-async function touchUser(db, userId) {
-  const now = Math.floor(Date.now() / 1000);
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 14px;
+    }
 
-  await db.prepare(
-    "UPDATE users SET last_seen = ? WHERE id = ?"
-  ).bind(now, userId).run();
+    .hero {
+      padding: 70px 0 55px;
+    }
 
-  return now;
-}
+    .hero-box {
+      background: var(--green);
+      color: white;
+      border-radius: 28px;
+      padding: clamp(25px, 6vw, 65px);
+      position: relative;
+      overflow: hidden;
+    }
 
-function publicUser(user) {
-  return {
-    id: user.id,
-    displayName: user.display_name,
-    age: user.age,
-    city: user.city,
-    about: user.about,
-    plan: user.plan,
-    planUntil: user.plan_until ?? null
-  };
-}
+    .tag {
+      display: inline-block;
+      background: rgba(217,243,106,.15);
+      color: var(--lime);
+      padding: 5px 13px;
+      border-radius: 30px;
+      font-size: 13px;
+    }
 
-async function createSession(db, userId) {
-  const token = newToken();
-  const tokenHash = await sha256(token);
-  const expires = Math.floor(Date.now() / 1000) + SESSION_SECONDS;
+    h1 {
+      font-size: clamp(29px, 5vw, 48px);
+      line-height: 1.6;
+      margin: 18px 0;
+    }
 
-  await db.prepare(`
-    INSERT INTO sessions (token_hash, user_id, expires_at)
-    VALUES (?, ?, ?)
-  `).bind(tokenHash, userId, expires).run();
+    .hero p {
+      max-width: 650px;
+      color: #e0ebe4;
+    }
 
-  await touchUser(db, userId);
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 25px;
+    }
 
-  return token;
-}
+    .button {
+      display: inline-block;
+      border: 0;
+      border-radius: 13px;
+      padding: 11px 19px;
+      font-weight: bold;
+      text-align: center;
+    }
 
-async function handle(request, env) {
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: CORS_HEADERS
+    .primary {
+      background: var(--lime);
+      color: var(--green);
+    }
+
+    .secondary {
+      border: 1px solid #a9c3b5;
+      color: white;
+      background: transparent;
+    }
+
+    section { padding: 35px 0; }
+
+    .section-title {
+      font-size: 27px;
+      margin: 0 0 8px;
+      color: var(--green);
+    }
+
+    .muted { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 23px;
+      min-width: 0;
+    }
+
+    .card h3 { margin-top: 0; }
+
+    .symbol {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-size: 25px;
+      font-weight: bold;
+      color: var(--green);
+      margin: 12px 0;
+    }
+
+    .price small {
+      font-size: 13px;
+      font-weight: normal;
+    }
+
+    .featured {
+      border: 2px solid var(--green);
+    }
+
+    .list {
+      padding-right: 20px;
+      color: var(--muted);
+    }
+
+    .form-card {
+      max-width: 650px;
+      margin: 20px auto;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 5px;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8e0d8;
+      border-radius: 11px;
+      background: white;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .full { width: 100%; margin-top: 16px; }
+
+    .notice {
+      padding: 14px;
+      border-radius: 12px;
+      background: #f0f5e5;
+      font-size: 13px;
+      color: #42563f;
+      margin-top: 16px;
+    }
+
+    #message {
+      margin-top: 14px;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      margin-top: 45px;
+      background: var(--green);
+      color: white;
+      padding: 30px 0;
+    }
+
+    footer p {
+      color: #d8e5dc;
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+      .nav { align-items: flex-start; }
+      .links { gap: 12px; }
+      .hero { padding-top: 28px; }
+      .hero-box { border-radius: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home">نزدیکا ✦</a>
+      <nav class="links" aria-label="منوی اصلی">
+        <a href="#how">نحوه کار</a>
+        <a href="#plans">اشتراک‌ها</a>
+        <a href="#account">حساب کاربری</a>
+        <a href="#safety">حریم خصوصی</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container hero" id="home">
+      <div class="hero-box">
+        <span class="tag">شروع آشنایی</span>
+        <h1>ارتباط محترمانه، انتخاب آگاهانه</h1>
+        <p>
+          نزدیکا؛ برای آشنایی‌هایی که معنا دارند 💚
+          پروفایل خودت را بساز، علایقت را معرفی کن و
+          برای پیدا کردن ارتباطی سازگار قدم بردار.
+          حریم خصوصی و رضایت دوطرفه مهم‌اند.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="#account">ساخت حساب کاربری</a>
+          <a class="button secondary" href="#how">مشاهده نحوه کار</a>
+        </div>
+      </div>
+    </div>
+
+    <section id="how">
+      <div class="container">
+        <h2 class="section-title">نحوه کار نزدیکا</h2>
+        <p class="muted">برای شروع، چند قدم ساده پیش رو داری.</p>
+        <div class="grid">
+          <article class="card">
+            <div class="symbol">👤</div>
+            <h3>۱. پروفایل بساز</h3>
+            <p class="muted">اطلاعات و علایقت را با دقت معرفی کن.</p>
+          </article>
+          <article class="card">
+            <div class="symbol">💚</div>
+            <h3>۲. آگاهانه انتخاب کن</h3>
+            <p class="muted">با احترام و بدون عجله برای شناخت بیشتر قدم بردار.</p>
+          </article>
+          <article class="card">
+            <div class="symbol">🤝</div>
+            <h3>۳. محترمانه ارتباط بگیر</h3>
+            <p class="muted">رضایت، مرزهای شخصی و امنیت را جدی بگیر.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="plans">
+      <div class="container">
+        <h2 class="section-title">اشتراک‌های نزدیکا</h2>
+        <p class="muted">قیمت‌ها برای دوره ۳۰ روزه هستند.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>رایگان</h3>
+            <div class="price">۰ تومان</div>
+            <ul class="list">
+              <li>شروع رایگان</li>
+              <li>ساخت پروفایل</li>
+              <li>امکانات پایه</li>
+            </ul>
+            <a class="button primary full" href="#account">شروع رایگان</a>
+          </article>
+          <article class="card featured">
+            <h3>پلاس</h3>
+            <div class="price">۱۹۹٬۰۰۰ <small>تومان</small></div>
+            <ul class="list">
+              <li>اشتراک ۳۰ روزه</li>
+              <li>امکانات ویژه پلاس پس از فعال‌سازی</li>
+            </ul>
+            <a class="button primary full" href="#account">درخواست اشتراک</a>
+          </article>
+          <article class="card">
+            <h3>ویژه</h3>
+            <div class="price">۳۹۹٬۰۰۰ <small>تومان</small></div>
+            <ul class="list">
+              <li>اشتراک ۳۰ روزه</li>
+              <li>امکانات ویژه پس از فعال‌سازی</li>
+            </ul>
+            <a class="button primary full" href="#account">درخواست اشتراک</a>
+          </article>
+        </div>
+        <p class="notice">
+          پرداخت و فعال‌سازی اشتراک تا زمان اتصال و آزمایش سرور،
+          در این صفحه انجام نمی‌شود.
+        </p>
+      </div>
+    </section>
+
+    <section id="account">
+      <div class="container">
+        <h2 class="section-title">حساب کاربری</h2>
+        <p class="muted">فرم زیر فعلاً نمایشی است و اطلاعات را به سرور ارسال نمی‌کند.</p>
+
+        <div class="card form-card">
+          <form id="accountForm">
+            <label for="name">نام نمایشی</label>
+            <input id="name" name="name" autocomplete="nickname"
+              maxlength="50" placeholder="نامی برای نمایش انتخاب کن" required>
+
+            <label for="phone">شماره موبایل</label>
+            <input id="phone" name="phone" type="tel"
+              inputmode="tel" autocomplete="tel"
+              placeholder="شماره موبایل" required>
+
+            <label for="about">درباره من</label>
+            <textarea id="about" name="about" maxlength="500"
+              placeholder="کمی درباره علایق خودت بنویس"></textarea>
+
+            <label for="plan">پلن موردنظر</label>
+            <select id="plan" name="plan">
+              <option value="free">رایگان — ۰ تومان</option>
+              <option value="plus">پلاس — ۱۹۹٬۰۰۰ تومان</option>
+              <option value="special">ویژه — ۳۹۹٬۰۰۰ تومان</option>
+            </select>
+
+            <button class="button primary full" type="submit">
+              ادامه
+            </button>
+            <div id="message" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety">
+      <div class="container">
+        <h2 class="section-title">امنیت و حریم خصوصی</h2>
+        <div class="card">
+          <p>اطلاعات شخصی و اطلاعات پرداخت را با افراد ناشناس به اشتراک نگذار.</p>
+          <p>برای ملاقات حضوری، مکان عمومی را انتخاب کن و به رضایت و مرزهای طرف مقابل احترام بگذار.</p>
+          <p class="muted">
+            تا زمان راه‌اندازی واقعی سرور، این صفحه حساب کاربری،
+            پروفایل عمومی یا پرداخت واقعی ایجاد نمی‌کند.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <strong>نزدیکا ✦</strong>
+      <p>آشنایی محترمانه، انتخاب آگاهانه 💚</p>
+      <p>© نزدیکا</p>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const form = document.getElementById("accountForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      message.textContent =
+        "این فرم هنوز به سرور متصل نیست؛ هیچ حسابی ساخته یا اطلاعاتی ارسال نشد.";
+
+      message.style.color = "#8a4b12";
     });
-  }
-
-  if (!env.DB) {
-    return json({ error: "DB_BINDING_MISSING" }, 500);
-  }
-
-  const url = new URL(request.url);
-  const path = url.pathname;
-
-  try {
-    await initializeDB(env.DB);
-
-    if (request.method === "GET" && path === "/health") {
-      return json({
-        ok: true,
-        service: "nazdika-api"
-      });
-    }
-
-    if (request.method === "POST" && path === "/api/register") {
-      const body = await readBody(request);
-
-      if (!body) {
-        return json({ error: "INVALID_JSON" }, 400);
-      }
-
-      const phone = normalizePhone(body.phone);
-      const name = String(body.displayName || "").trim();
-      const city = String(body.city || "").trim();
-      const about = String(body.about || "").trim();
-      const age = Number(body.age);
-      const password = String(body.password || "");
-
-      if (!validIranPhone(phone)) {
-        return json({ error: "INVALID_PHONE" }, 400);
-      }
-
-      if (name.length < 2 || name.length > 40) {
-        return json({ error: "INVALID_NAME" }, 400);
-      }
-
-      if (!Number.isInteger(age) || age < 18 || age > 100) {
-        return json({ error: "AGE_RESTRICTED" }, 400);
-      }
-
-      if (!city || city.length > 60 || about.length > 500) {
-        return json({ error: "INVALID_PROFILE" }, 400);
-      }
-
-      if (password.length < 8 || password.length > 128) {
-        return json({ error: "INVALID_PASSWORD" }, 400);
-      }
-
-      const existing = await env.DB.prepare(
-        "SELECT id FROM users WHERE phone = ?"
-      ).bind(phone).first();
-
-      if (existing) {
-        return json({ error: "ACCOUNT_EXISTS" }, 409);
-      }
-
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const passwordHash = await hashPassword(password, salt);
-
-      const result = await env.DB.prepare(`
-        INSERT INTO users
-          (phone, display_name, age, city, about, salt, password_hash)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).bind(
-        phone,
-        name,
-        age,
-        city,
-        about,
-        toBase64(salt),
-        passwordHash
-      ).run();
-
-      const userId = Number(result.meta.last_row_id);
-      const token = await createSession(env.DB, userId);
-
-      return json({
-        ok: true,
-        token,
-        user: {
-          id: userId,
-          displayName: name,
-          age,
-          city,
-          about,
-          plan: "free",
-          planUntil: null
-        }
-      }, 201);
-    }
-
-    if (request.method === "POST" && path === "/api/login") {
-      const body = await readBody(request);
-
-      if (!body) {
-        return json({ error: "INVALID_JSON" }, 400);
-      }
-
-      const phone = normalizePhone(body.phone);
-      const password = String(body.password || "");
-
-      if (!validIranPhone(phone) || !password || password.length > 128) {
-        return json({ error: "INVALID_CREDENTIALS" }, 400);
-      }
-
-      const user = await env.DB.prepare(
-        "SELECT * FROM users WHERE phone = ?"
-      ).bind(phone).first();
-
-      if (!user) {
-        return json({ error: "INVALID_CREDENTIALS" }, 401);
-      }
-
-      let calculated;
-
-      try {
-        calculated = await hashPassword(
-          password,
-          fromBase64(user.salt)
-        );
-      } catch {
-        return json({ error: "PASSWORD_HASH_FAILED" }, 500);
-      }
-
-      if (calculated !== user.password_hash) {
-        return json({ error: "INVALID_CREDENTIALS" }, 401);
-      }
-
-      const token = await createSession(env.DB, user.id);
-
-      return json({
-        ok: true,
-        token,
-        user: publicUser(user)
-      });
-    }
-
-    if (request.method === "GET" && path === "/api/me") {
-      const user = await getUser(request, env.DB);
-
-      if (!user) {
-        return json({ error: "UNAUTHORIZED" }, 401);
-      }
-
-      await touchUser(env.DB, user.id);
-
-      return json({
-        ok: true,
-        user: publicUser(user)
-      });
-    }
-
-    if (request.method === "POST" && path === "/api/logout") {
-      const auth = request.headers.get("Authorization") || "";
-      const match = auth.match(/^Bearer ([A-Za-z0-9_-]{40,100})$/);
-
-      if (match) {
-        await env.DB.prepare(
-          "DELETE FROM sessions WHERE token_hash = ?"
-        ).bind(await sha256(match[1])).run();
-      }
-
-      return json({ ok: true });
-    }
-
-    if (request.method === "GET" && path === "/api/profiles") {
-      const user = await getUser(request, env.DB);
-
-      if (!user) {
-        return json({ error: "UNAUTHORIZED" }, 401);
-      }
-
-      const now = await touchUser(env.DB, user.id);
-
-      const result = await env.DB.prepare(`
-        SELECT
-          id,
-          display_name,
-          age,
-          city,
-          about,
-          CASE WHEN last_seen >= ? THEN 1 ELSE 0 END AS online
-        FROM users
-        WHERE id != ?
-        ORDER BY last_seen DESC
-        LIMIT 50
-      `).bind(now - ONLINE_SECONDS, user.id).all();
-
-      return json({
-        ok: true,
-        profiles: (result.results || []).map(p => ({
-          id: p.id,
-          displayName: p.display_name,
-          age: p.age,
-          city: p.city,
-          about: p.about,
-          online: Boolean(p.online)
-        }))
-      });
-    }
-
-    if (request.method === "POST" && path === "/api/heartbeat") {
-      const user = await getUser(request, env.DB);
-
-      if (!user) {
-        return json({ error: "UNAUTHORIZED" }, 401);
-      }
-
-      const timestamp = await touchUser(env.DB, user.id);
-
-      return json({
-        ok: true,
-        timestamp
-      });
-    }
-
-    return json({ error: "NOT_FOUND" }, 404);
-
-  } catch (error) {
-    console.error("Nazdika API error:", error);
-
-    return json({
-      error: "INTERNAL_ERROR"
-    }, 500);
-  }
-}
-
-export default {
-  async fetch(request, env) {
-    return handle(request, env);
-  }
-};
+  </script>
+</body>
+</html>
