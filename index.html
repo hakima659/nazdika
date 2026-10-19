@@ -1,4 +1,3 @@
-
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://hakima659.github.io",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -7,11 +6,92 @@ const CORS_HEADERS = {
   "Cache-Control": "no-store"
 };
 
+const encoder = new TextEncoder();
+const SESSION_SECONDS = 7 * 24 * 60 * 60;
+const ONLINE_SECONDS = 120;
+
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
     headers: CORS_HEADERS
   });
+
+function normalizePhone(value) {
+  let phone = String(value || "").replace(/[\s()-]/g, "");
+
+  if (phone.startsWith("+98")) phone = "0" + phone.slice(3);
+  if (phone.startsWith("0098")) phone = "0" + phone.slice(4);
+  if (/^9\d{9}$/.test(phone)) phone = "0" + phone;
+
+  return phone;
+}
+
+function validIranPhone(phone) {
+  return /^09\d{9}$/.test(phone);
+}
+
+function toBase64(bytes) {
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
+
+function fromBase64(value) {
+  return Uint8Array.from(atob(value), c => c.charCodeAt(0));
+}
+
+function base64Url(bytes) {
+  return toBase64(bytes)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
+
+async function sha256(value) {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    encoder.encode(value)
+  );
+
+  return toBase64(new Uint8Array(digest));
+}
+
+async function hashPassword(password, salt) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits"]
+  );
+
+  const bits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: 100000,
+      hash: "SHA-256"
+    },
+    key,
+    256
+  );
+
+  return toBase64(new Uint8Array(bits));
+}
+
+async function readBody(request) {
+  try {
+    const body = await request.json();
+
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return null;
+    }
+
+    return body;
+  } catch {
+    return null;
+  }
+}
 
 async function initializeDB(db) {
   await db.batch([
@@ -29,12 +109,14 @@ async function initializeDB(db) {
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       last_seen INTEGER NOT NULL DEFAULT 0
     )`),
+
     db.prepare(`CREATE TABLE IF NOT EXISTS sessions (
       token_hash TEXT PRIMARY KEY,
       user_id INTEGER NOT NULL,
       expires_at INTEGER NOT NULL,
       FOREIGN KEY(user_id) REFERENCES users(id)
     )`),
+
     db.prepare(`CREATE TABLE IF NOT EXISTS subscription_requests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -48,98 +130,86 @@ async function initializeDB(db) {
   ]);
 }
 
-const encoder = new TextEncoder();
-
-function toBase64(bytes) {
-  let binary = "";
-  for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary);
-}
-
-function fromBase64(value) {
-  return Uint8Array.from(atob(value), c => c.charCodeAt(0));
-}
-
-async function hashPassword(password, salt) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(password),
-    "PBKDF2",
-    false,
-    ["deriveBits"]
-  );
-
-  const bits = await crypto.subtle.deriveBits({
-    name: "PBKDF2",
-    salt,
-    iterations: 100000,
-    hash: "SHA-256"
-  }, key, 256);
-
-  return toBase64(new Uint8Array(bits));
-}
-
-async function sha256(value) {
-  const digest = await crypto.subtle.digest(
-    "SHA-256",
-    encoder.encode(value)
-  );
-  return toBase64(new Uint8Array(digest));
-}
-
-function normalizePhone(value) {
-  let phone = String(value || "").replace(/[\s()-]/g, "");
-  if (phone.startsWith("+98")) phone = "0" + phone.slice(3);
-  if (phone.startsWith("0098")) phone = "0" + phone.slice(4);
-  if (/^9\d{9}$/.test(phone)) phone = "0" + phone;
-  return phone;
-}
-
-function validIranPhone(phone) {
-  return /^09\d{9}$/.test(phone);
-}
-
-async function readBody(request) {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
+function newToken() {
+  return base64Url(crypto.getRandomValues(new Uint8Array(32)));
 }
 
 async function getUser(request, db) {
   const auth = request.headers.get("Authorization") || "";
   const match = auth.match(/^Bearer ([A-Za-z0-9_-]{40,100})$/);
+
   if (!match) return null;
 
   const tokenHash = await sha256(match[1]);
   const now = Math.floor(Date.now() / 1000);
 
   const session = await db.prepare(`
-    SELECT users.id, users.phone, users.display_name,
-           users.age, users.city, users.about, users.plan,
-           users.plan_until
+    SELECT
+      users.id,
+      users.phone,
+      users.display_name,
+      users.age,
+      users.city,
+      users.about,
+      users.plan,
+      users.plan_until
     FROM sessions
     JOIN users ON users.id = sessions.user_id
     WHERE sessions.token_hash = ?
       AND sessions.expires_at > ?
   `).bind(tokenHash, now).first();
 
-  if (!session) return null;
+  return session || null;
+}
+
+async function touchUser(db, userId) {
+  const now = Math.floor(Date.now() / 1000);
 
   await db.prepare(
     "UPDATE users SET last_seen = ? WHERE id = ?"
-  ).bind(now, session.id).run();
+  ).bind(now, userId).run();
 
-  return session;
+  return now;
+}
+
+function publicUser(user) {
+  return {
+    id: user.id,
+    displayName: user.display_name,
+    age: user.age,
+    city: user.city,
+    about: user.about,
+    plan: user.plan,
+    planUntil: user.plan_until ?? null
+  };
+}
+
+async function createSession(db, userId) {
+  const token = newToken();
+  const tokenHash = await sha256(token);
+  const expires = Math.floor(Date.now() / 1000) + SESSION_SECONDS;
+
+  await db.prepare(`
+    INSERT INTO sessions (token_hash, user_id, expires_at)
+    VALUES (?, ?, ?)
+  `).bind(tokenHash, userId, expires).run();
+
+  await touchUser(db, userId);
+
+  return token;
 }
 
 async function handle(request, env) {
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: CORS_HEADERS });
+    return new Response(null, {
+      status: 204,
+      headers: CORS_HEADERS
+    });
   }
 
-  if (!env.DB) return json({ error: "DB_BINDING_MISSING" }, 500);
+  if (!env.DB) {
+    return json({ error: "DB_BINDING_MISSING" }, 500);
+  }
 
   const url = new URL(request.url);
   const path = url.pathname;
@@ -148,12 +218,18 @@ async function handle(request, env) {
     await initializeDB(env.DB);
 
     if (request.method === "GET" && path === "/health") {
-      return json({ ok: true, service: "nazdika-api" });
+      return json({
+        ok: true,
+        service: "nazdika-api"
+      });
     }
 
     if (request.method === "POST" && path === "/api/register") {
       const body = await readBody(request);
-      if (!body) return json({ error: "INVALID_JSON" }, 400);
+
+      if (!body) {
+        return json({ error: "INVALID_JSON" }, 400);
+      }
 
       const phone = normalizePhone(body.phone);
       const name = String(body.displayName || "").trim();
@@ -162,27 +238,33 @@ async function handle(request, env) {
       const age = Number(body.age);
       const password = String(body.password || "");
 
-      if (!validIranPhone(phone))
+      if (!validIranPhone(phone)) {
         return json({ error: "INVALID_PHONE" }, 400);
+      }
 
-      if (name.length < 2 || name.length > 40)
+      if (name.length < 2 || name.length > 40) {
         return json({ error: "INVALID_NAME" }, 400);
+      }
 
-      if (!Number.isInteger(age) || age < 18 || age > 100)
+      if (!Number.isInteger(age) || age < 18 || age > 100) {
         return json({ error: "AGE_RESTRICTED" }, 400);
+      }
 
-      if (!city || city.length > 60 || about.length > 500)
+      if (!city || city.length > 60 || about.length > 500) {
         return json({ error: "INVALID_PROFILE" }, 400);
+      }
 
-      if (password.length < 8 || password.length > 128)
+      if (password.length < 8 || password.length > 128) {
         return json({ error: "INVALID_PASSWORD" }, 400);
+      }
 
       const existing = await env.DB.prepare(
         "SELECT id FROM users WHERE phone = ?"
       ).bind(phone).first();
 
-      if (existing)
+      if (existing) {
         return json({ error: "ACCOUNT_EXISTS" }, 409);
+      }
 
       const salt = crypto.getRandomValues(new Uint8Array(16));
       const passwordHash = await hashPassword(password, salt);
@@ -192,24 +274,17 @@ async function handle(request, env) {
           (phone, display_name, age, city, about, salt, password_hash)
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `).bind(
-        phone, name, age, city, about,
-        toBase64(salt), passwordHash
+        phone,
+        name,
+        age,
+        city,
+        about,
+        toBase64(salt),
+        passwordHash
       ).run();
 
-      const userId = result.meta.last_row_id;
-      const token = toBase64(crypto.getRandomValues(new Uint8Array(32)))
-        .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-      const tokenHash = await sha256(token);
-      const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
-
-      await env.DB.prepare(`
-        INSERT INTO sessions (token_hash, user_id, expires_at)
-        VALUES (?, ?, ?)
-      `).bind(tokenHash, userId, expires).run();
-
-      await env.DB.prepare(
-        "UPDATE users SET last_seen = ? WHERE id = ?"
-      ).bind(Math.floor(Date.now() / 1000), userId).run();
+      const userId = Number(result.meta.last_row_id);
+      const token = await createSession(env.DB, userId);
 
       return json({
         ok: true,
@@ -220,78 +295,70 @@ async function handle(request, env) {
           age,
           city,
           about,
-          plan: "free"
+          plan: "free",
+          planUntil: null
         }
       }, 201);
     }
 
     if (request.method === "POST" && path === "/api/login") {
       const body = await readBody(request);
-      if (!body) return json({ error: "INVALID_JSON" }, 400);
+
+      if (!body) {
+        return json({ error: "INVALID_JSON" }, 400);
+      }
 
       const phone = normalizePhone(body.phone);
       const password = String(body.password || "");
 
-      if (!validIranPhone(phone) || !password || password.length > 128)
+      if (!validIranPhone(phone) || !password || password.length > 128) {
         return json({ error: "INVALID_CREDENTIALS" }, 400);
+      }
 
       const user = await env.DB.prepare(
         "SELECT * FROM users WHERE phone = ?"
       ).bind(phone).first();
 
-      if (!user)
+      if (!user) {
         return json({ error: "INVALID_CREDENTIALS" }, 401);
+      }
 
-      const calculated = await hashPassword(
-        password, fromBase64(user.salt)
-      );
+      let calculated;
 
-      if (calculated !== user.password_hash)
+      try {
+        calculated = await hashPassword(
+          password,
+          fromBase64(user.salt)
+        );
+      } catch {
+        return json({ error: "PASSWORD_HASH_FAILED" }, 500);
+      }
+
+      if (calculated !== user.password_hash) {
         return json({ error: "INVALID_CREDENTIALS" }, 401);
+      }
 
-      const token = toBase64(crypto.getRandomValues(new Uint8Array(32)))
-        .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-      const tokenHash = await sha256(token);
-      const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
-
-      await env.DB.prepare(`
-        INSERT INTO sessions (token_hash, user_id, expires_at)
-        VALUES (?, ?, ?)
-      `).bind(tokenHash, user.id, expires).run();
-
-      await env.DB.prepare(
-        "UPDATE users SET last_seen = ? WHERE id = ?"
-      ).bind(Math.floor(Date.now() / 1000), user.id).run();
+      const token = await createSession(env.DB, user.id);
 
       return json({
         ok: true,
         token,
-        user: {
-          id: user.id,
-          displayName: user.display_name,
-          age: user.age,
-          city: user.city,
-          about: user.about,
-          plan: user.plan
-        }
+        user: publicUser(user)
       });
     }
 
     if (request.method === "GET" && path === "/api/me") {
       const user = await getUser(request, env.DB);
-      if (!user) return json({ error: "UNAUTHORIZED" }, 401);
+
+      if (!user) {
+        return json({ error: "UNAUTHORIZED" }, 401);
+      }
+
+      await touchUser(env.DB, user.id);
 
       return json({
         ok: true,
-        user: {
-          id: user.id,
-          displayName: user.display_name,
-          age: user.age,
-          city: user.city,
-          about: user.about,
-          plan: user.plan,
-          planUntil: user.plan_until
-        }
+        user: publicUser(user)
       });
     }
 
@@ -310,21 +377,30 @@ async function handle(request, env) {
 
     if (request.method === "GET" && path === "/api/profiles") {
       const user = await getUser(request, env.DB);
-      if (!user) return json({ error: "UNAUTHORIZED" }, 401);
 
-      const now = Math.floor(Date.now() / 1000);
+      if (!user) {
+        return json({ error: "UNAUTHORIZED" }, 401);
+      }
+
+      const now = await touchUser(env.DB, user.id);
+
       const result = await env.DB.prepare(`
-        SELECT id, display_name, age, city, about,
+        SELECT
+          id,
+          display_name,
+          age,
+          city,
+          about,
           CASE WHEN last_seen >= ? THEN 1 ELSE 0 END AS online
         FROM users
         WHERE id != ?
         ORDER BY last_seen DESC
         LIMIT 50
-      `).bind(now - 120, user.id).all();
+      `).bind(now - ONLINE_SECONDS, user.id).all();
 
       return json({
         ok: true,
-        profiles: result.results.map(p => ({
+        profiles: (result.results || []).map(p => ({
           id: p.id,
           displayName: p.display_name,
           age: p.age,
@@ -337,15 +413,27 @@ async function handle(request, env) {
 
     if (request.method === "POST" && path === "/api/heartbeat") {
       const user = await getUser(request, env.DB);
-      if (!user) return json({ error: "UNAUTHORIZED" }, 401);
 
-      return json({ ok: true, timestamp: Math.floor(Date.now() / 1000) });
+      if (!user) {
+        return json({ error: "UNAUTHORIZED" }, 401);
+      }
+
+      const timestamp = await touchUser(env.DB, user.id);
+
+      return json({
+        ok: true,
+        timestamp
+      });
     }
 
     return json({ error: "NOT_FOUND" }, 404);
+
   } catch (error) {
     console.error("Nazdika API error:", error);
-    return json({ error: "INTERNAL_ERROR" }, 500);
+
+    return json({
+      error: "INTERNAL_ERROR"
+    }, 500);
   }
 }
 
