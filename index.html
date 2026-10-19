@@ -1,427 +1,522 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#123c32">
-  <meta name="description" content="نزدیکا؛ فضایی برای آشنایی محترمانه، ساخت پروفایل و پیدا کردن ارتباطی سازگار.">
-  <title>نزدیکا ✦ | آشنایی محترمانه</title>
-  <style>
-    :root {
-      --green: #123c32;
-      --lime: #d9f36a;
-      --bg: #f7f9f5;
-      --text: #20332c;
-      --muted: #68766f;
-      --white: #fff;
-      --border: #e3e9e1;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123c32">
+<meta name="description" content="نزدیکا؛ فضایی برای آشنایی محترمانه و پیدا کردن ارتباطی سازگار.">
+<title>نزدیکا ✦ | آشنایی محترمانه</title>
 
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.9;
-    }
-
-    a { color: inherit; text-decoration: none; }
-
-    button, input, select, textarea {
-      font: inherit;
-    }
-
-    button, .button {
-      cursor: pointer;
-    }
-
-    .container {
-      width: min(1080px, 92%);
-      margin: auto;
-    }
-
-    header {
-      background: rgba(255,255,255,.96);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .nav {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      padding: 12px 0;
-    }
-
-    .brand {
-      font-size: 23px;
-      font-weight: bold;
-      color: var(--green);
-    }
-
-    .links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      font-size: 14px;
-    }
-
-    .hero {
-      padding: 70px 0 55px;
-    }
-
-    .hero-box {
-      background: var(--green);
-      color: white;
-      border-radius: 28px;
-      padding: clamp(25px, 6vw, 65px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .tag {
-      display: inline-block;
-      background: rgba(217,243,106,.15);
-      color: var(--lime);
-      padding: 5px 13px;
-      border-radius: 30px;
-      font-size: 13px;
-    }
-
-    h1 {
-      font-size: clamp(29px, 5vw, 48px);
-      line-height: 1.6;
-      margin: 18px 0;
-    }
-
-    .hero p {
-      max-width: 650px;
-      color: #e0ebe4;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 25px;
-    }
-
-    .button {
-      display: inline-block;
-      border: 0;
-      border-radius: 13px;
-      padding: 11px 19px;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .primary {
-      background: var(--lime);
-      color: var(--green);
-    }
-
-    .secondary {
-      border: 1px solid #a9c3b5;
-      color: white;
-      background: transparent;
-    }
-
-    section { padding: 35px 0; }
-
-    .section-title {
-      font-size: 27px;
-      margin: 0 0 8px;
-      color: var(--green);
-    }
-
-    .muted { color: var(--muted); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 24px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 23px;
-      min-width: 0;
-    }
-
-    .card h3 { margin-top: 0; }
-
-    .symbol {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .price {
-      font-size: 25px;
-      font-weight: bold;
-      color: var(--green);
-      margin: 12px 0;
-    }
-
-    .price small {
-      font-size: 13px;
-      font-weight: normal;
-    }
-
-    .featured {
-      border: 2px solid var(--green);
-    }
-
-    .list {
-      padding-right: 20px;
-      color: var(--muted);
-    }
-
-    .form-card {
-      max-width: 650px;
-      margin: 20px auto;
-    }
-
-    label {
-      display: block;
-      margin: 12px 0 5px;
-      font-size: 14px;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d8e0d8;
-      border-radius: 11px;
-      background: white;
-      color: var(--text);
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .full { width: 100%; margin-top: 16px; }
-
-    .notice {
-      padding: 14px;
-      border-radius: 12px;
-      background: #f0f5e5;
-      font-size: 13px;
-      color: #42563f;
-      margin-top: 16px;
-    }
-
-    #message {
-      margin-top: 14px;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    footer {
-      margin-top: 45px;
-      background: var(--green);
-      color: white;
-      padding: 30px 0;
-    }
-
-    footer p {
-      color: #d8e5dc;
-      font-size: 13px;
-    }
-
-    @media (max-width: 720px) {
-      .grid { grid-template-columns: 1fr; }
-      .nav { align-items: flex-start; }
-      .links { gap: 12px; }
-      .hero { padding-top: 28px; }
-      .hero-box { border-radius: 20px; }
-    }
-  </style>
+<style>
+:root {
+  --green:#123c32;
+  --lime:#d9f36a;
+  --bg:#f7f9f5;
+  --text:#20332c;
+  --muted:#68766f;
+  --border:#e3e9e1;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:Tahoma,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.9
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.container{width:min(1080px,92%);margin:auto}
+header{
+  background:white;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:5
+}
+.nav{
+  min-height:70px;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;flex-wrap:wrap;padding:10px 0
+}
+.brand{font-size:23px;font-weight:bold;color:var(--green)}
+.links{display:flex;gap:17px;flex-wrap:wrap;font-size:14px}
+.hero{padding:35px 0}
+.hero-box{
+  background:var(--green);color:white;border-radius:25px;
+  padding:clamp(24px,6vw,60px)
+}
+.tag{
+  display:inline-block;background:#ffffff20;color:var(--lime);
+  padding:4px 13px;border-radius:25px;font-size:13px
+}
+h1{font-size:clamp(29px,5vw,45px);line-height:1.6}
+.hero p{color:#e0ebe4;max-width:680px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{
+  display:inline-block;border:0;border-radius:12px;
+  padding:10px 17px;font-weight:bold;text-align:center
+}
+.primary{background:var(--lime);color:var(--green)}
+.secondary{background:transparent;color:white;border:1px solid #a9c3b5}
+section{padding:28px 0}
+.section-title{color:var(--green);font-size:26px;margin:0 0 8px}
+.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.card{
+  background:white;border:1px solid var(--border);
+  border-radius:18px;padding:21px;min-width:0
+}
+.card h3{margin-top:0}
+.price{font-size:24px;font-weight:bold;color:var(--green)}
+.price small{font-size:13px;font-weight:normal}
+.featured{border:2px solid var(--green)}
+ul{padding-right:22px}
+.form-card{max-width:650px;margin:20px auto}
+label{display:block;margin:11px 0 5px;font-size:14px}
+input,select,textarea{
+  width:100%;padding:12px;border:1px solid #d8e0d8;
+  border-radius:11px;background:white;color:var(--text)
+}
+textarea{min-height:85px;resize:vertical}
+.full{width:100%;margin-top:15px}
+.notice{
+  padding:12px;background:#f0f5e5;border-radius:12px;
+  color:#42563f;font-size:13px;margin-top:15px
+}
+.message{font-size:14px;overflow-wrap:anywhere;margin-top:12px}
+.hidden{display:none!important}
+.profile{margin-top:12px}
+.status{font-size:12px;color:var(--muted)}
+.online{color:#278347;font-weight:bold}
+footer{margin-top:35px;background:var(--green);color:white;padding:25px 0}
+footer p{color:#d8e5dc;font-size:13px}
+@media(max-width:720px){
+ .grid{grid-template-columns:1fr}
+ .nav{align-items:flex-start}
+ .links{gap:11px}
+ .hero-box{border-radius:19px}
+}
+</style>
 </head>
 
 <body>
-  <header>
-    <div class="container nav">
-      <a class="brand" href="#home">نزدیکا ✦</a>
-      <nav class="links" aria-label="منوی اصلی">
-        <a href="#how">نحوه کار</a>
-        <a href="#plans">اشتراک‌ها</a>
-        <a href="#account">حساب کاربری</a>
-        <a href="#safety">حریم خصوصی</a>
-      </nav>
+<header>
+  <div class="container nav">
+    <a class="brand" href="#home">نزدیکا ✦</a>
+    <nav class="links">
+      <a href="#how">نحوه کار</a>
+      <a href="#plans">اشتراک‌ها</a>
+      <a href="#account">حساب کاربری</a>
+      <a href="#profiles">پروفایل‌ها</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="container hero" id="home">
+  <div class="hero-box">
+    <span class="tag">شروع آشنایی</span>
+    <h1>ارتباط محترمانه، انتخاب آگاهانه</h1>
+    <p>
+      نزدیکا؛ برای آشنایی‌هایی که معنا دارند 💚
+      پروفایل بساز، علایقت را معرفی کن و برای شناخت
+      افراد جدید با احترام و آگاهی قدم بردار.
+    </p>
+    <div class="actions">
+      <a class="btn primary" href="#account">ساخت حساب کاربری</a>
+      <a class="btn secondary" href="#how">نحوه کار</a>
     </div>
-  </header>
+  </div>
+</div>
 
-  <main>
-    <div class="container hero" id="home">
-      <div class="hero-box">
-        <span class="tag">شروع آشنایی</span>
-        <h1>ارتباط محترمانه، انتخاب آگاهانه</h1>
-        <p>
-          نزدیکا؛ برای آشنایی‌هایی که معنا دارند 💚
-          پروفایل خودت را بساز، علایقت را معرفی کن و
-          برای پیدا کردن ارتباطی سازگار قدم بردار.
-          حریم خصوصی و رضایت دوطرفه مهم‌اند.
-        </p>
-        <div class="actions">
-          <a class="button primary" href="#account">ساخت حساب کاربری</a>
-          <a class="button secondary" href="#how">مشاهده نحوه کار</a>
+<section id="how">
+  <div class="container">
+    <h2 class="section-title">نحوه کار نزدیکا</h2>
+    <p class="muted">سه قدم برای شروع آشنایی.</p>
+    <div class="grid">
+      <article class="card"><h3>👤 پروفایل بساز</h3><p>اطلاعات و علایقت را معرفی کن.</p></article>
+      <article class="card"><h3>💚 آگاهانه انتخاب کن</h3><p>برای شناخت بیشتر عجله نکن.</p></article>
+      <article class="card"><h3>🤝 محترمانه ارتباط بگیر</h3><p>به رضایت و مرزهای دیگران احترام بگذار.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="plans">
+  <div class="container">
+    <h2 class="section-title">اشتراک‌های نزدیکا</h2>
+    <p class="muted">قیمت دوره ۳۰ روزه.</p>
+    <div class="grid">
+      <article class="card">
+        <h3>رایگان</h3><div class="price">۰ تومان</div>
+        <p>شروع و آشنایی با امکانات پایه.</p>
+        <a class="btn primary full" href="#account">شروع رایگان</a>
+      </article>
+      <article class="card featured">
+        <h3>پلاس</h3><div class="price">۱۹۹٬۰۰۰ <small>تومان</small></div>
+        <p>اشتراک ۳۰ روزه پلاس.</p>
+        <a class="btn primary full" href="#account" data-plan="plus">انتخاب پلاس</a>
+      </article>
+      <article class="card">
+        <h3>ویژه</h3><div class="price">۳۹۹٬۰۰۰ <small>تومان</small></div>
+        <p>اشتراک ۳۰ روزه ویژه.</p>
+        <a class="btn primary full" href="#account" data-plan="special">انتخاب ویژه</a>
+      </article>
+    </div>
+    <p class="notice">پرداخت و فعال‌سازی پلن‌های پولی تا اتصال و پیاده‌سازی مسیر تأیید پرداخت در سرور انجام نمی‌شود.</p>
+  </div>
+</section>
+
+<section id="account">
+<div class="container">
+  <h2 class="section-title">حساب کاربری</h2>
+  <p class="muted">برای ثبت‌نام یا ورود، فرم زیر را تکمیل کن.</p>
+
+  <div class="card form-card">
+    <div id="accountPanel">
+      <label for="mode">نوع درخواست</label>
+      <select id="mode">
+        <option value="register">ساخت حساب جدید</option>
+        <option value="login">ورود به حساب</option>
+      </select>
+
+      <form id="accountForm">
+        <label for="phone">شماره موبایل</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel"
+          autocomplete="tel" placeholder="مثلاً 09123456789" required>
+
+        <div id="registerFields">
+          <label for="displayName">نام نمایشی</label>
+          <input id="displayName" name="displayName" maxlength="40"
+            autocomplete="nickname" placeholder="نام نمایشی">
+
+          <label for="age">سن</label>
+          <input id="age" name="age" type="number" min="18" max="100" placeholder="سن">
+
+          <label for="city">شهر</label>
+          <input id="city" name="city" maxlength="60" placeholder="نام شهر">
+
+          <label for="about">درباره من</label>
+          <textarea id="about" name="about" maxlength="500"
+            placeholder="علایق و توضیح کوتاه"></textarea>
         </div>
-      </div>
+
+        <label for="password">رمز عبور</label>
+        <input id="password" name="password" type="password"
+          minlength="8" maxlength="128" autocomplete="current-password"
+          placeholder="حداقل ۸ نویسه" required>
+
+        <button id="submitBtn" class="btn primary full" type="submit">ساخت حساب</button>
+      </form>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
     </div>
 
-    <section id="how">
-      <div class="container">
-        <h2 class="section-title">نحوه کار نزدیکا</h2>
-        <p class="muted">برای شروع، چند قدم ساده پیش رو داری.</p>
-        <div class="grid">
-          <article class="card">
-            <div class="symbol">👤</div>
-            <h3>۱. پروفایل بساز</h3>
-            <p class="muted">اطلاعات و علایقت را با دقت معرفی کن.</p>
-          </article>
-          <article class="card">
-            <div class="symbol">💚</div>
-            <h3>۲. آگاهانه انتخاب کن</h3>
-            <p class="muted">با احترام و بدون عجله برای شناخت بیشتر قدم بردار.</p>
-          </article>
-          <article class="card">
-            <div class="symbol">🤝</div>
-            <h3>۳. محترمانه ارتباط بگیر</h3>
-            <p class="muted">رضایت، مرزهای شخصی و امنیت را جدی بگیر.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="plans">
-      <div class="container">
-        <h2 class="section-title">اشتراک‌های نزدیکا</h2>
-        <p class="muted">قیمت‌ها برای دوره ۳۰ روزه هستند.</p>
-        <div class="grid">
-          <article class="card">
-            <h3>رایگان</h3>
-            <div class="price">۰ تومان</div>
-            <ul class="list">
-              <li>شروع رایگان</li>
-              <li>ساخت پروفایل</li>
-              <li>امکانات پایه</li>
-            </ul>
-            <a class="button primary full" href="#account">شروع رایگان</a>
-          </article>
-          <article class="card featured">
-            <h3>پلاس</h3>
-            <div class="price">۱۹۹٬۰۰۰ <small>تومان</small></div>
-            <ul class="list">
-              <li>اشتراک ۳۰ روزه</li>
-              <li>امکانات ویژه پلاس پس از فعال‌سازی</li>
-            </ul>
-            <a class="button primary full" href="#account">درخواست اشتراک</a>
-          </article>
-          <article class="card">
-            <h3>ویژه</h3>
-            <div class="price">۳۹۹٬۰۰۰ <small>تومان</small></div>
-            <ul class="list">
-              <li>اشتراک ۳۰ روزه</li>
-              <li>امکانات ویژه پس از فعال‌سازی</li>
-            </ul>
-            <a class="button primary full" href="#account">درخواست اشتراک</a>
-          </article>
-        </div>
-        <p class="notice">
-          پرداخت و فعال‌سازی اشتراک تا زمان اتصال و آزمایش سرور،
-          در این صفحه انجام نمی‌شود.
-        </p>
-      </div>
-    </section>
-
-    <section id="account">
-      <div class="container">
-        <h2 class="section-title">حساب کاربری</h2>
-        <p class="muted">فرم زیر فعلاً نمایشی است و اطلاعات را به سرور ارسال نمی‌کند.</p>
-
-        <div class="card form-card">
-          <form id="accountForm">
-            <label for="name">نام نمایشی</label>
-            <input id="name" name="name" autocomplete="nickname"
-              maxlength="50" placeholder="نامی برای نمایش انتخاب کن" required>
-
-            <label for="phone">شماره موبایل</label>
-            <input id="phone" name="phone" type="tel"
-              inputmode="tel" autocomplete="tel"
-              placeholder="شماره موبایل" required>
-
-            <label for="about">درباره من</label>
-            <textarea id="about" name="about" maxlength="500"
-              placeholder="کمی درباره علایق خودت بنویس"></textarea>
-
-            <label for="plan">پلن موردنظر</label>
-            <select id="plan" name="plan">
-              <option value="free">رایگان — ۰ تومان</option>
-              <option value="plus">پلاس — ۱۹۹٬۰۰۰ تومان</option>
-              <option value="special">ویژه — ۳۹۹٬۰۰۰ تومان</option>
-            </select>
-
-            <button class="button primary full" type="submit">
-              ادامه
-            </button>
-            <div id="message" role="status" aria-live="polite"></div>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section id="safety">
-      <div class="container">
-        <h2 class="section-title">امنیت و حریم خصوصی</h2>
-        <div class="card">
-          <p>اطلاعات شخصی و اطلاعات پرداخت را با افراد ناشناس به اشتراک نگذار.</p>
-          <p>برای ملاقات حضوری، مکان عمومی را انتخاب کن و به رضایت و مرزهای طرف مقابل احترام بگذار.</p>
-          <p class="muted">
-            تا زمان راه‌اندازی واقعی سرور، این صفحه حساب کاربری،
-            پروفایل عمومی یا پرداخت واقعی ایجاد نمی‌کند.
-          </p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">
-      <strong>نزدیکا ✦</strong>
-      <p>آشنایی محترمانه، انتخاب آگاهانه 💚</p>
-      <p>© نزدیکا</p>
+    <div id="userPanel" class="hidden">
+      <h3>حساب شما</h3>
+      <div id="userInfo"></div>
+      <button id="refreshProfiles" class="btn primary full" type="button">به‌روزرسانی پروفایل‌ها</button>
+      <button id="logoutBtn" class="btn secondary full" style="background:#123c32" type="button">خروج از حساب</button>
+      <div id="userMessage" class="message" role="status"></div>
     </div>
-  </footer>
+  </div>
+</div>
+</section>
 
-  <script>
-    "use strict";
+<section id="profiles">
+  <div class="container">
+    <h2 class="section-title">پروفایل‌ها</h2>
+    <p class="muted">برای مشاهده پروفایل‌ها ابتدا وارد حساب خودت شو. فقط پروفایل‌هایی نمایش داده می‌شوند که سرور برگرداند.</p>
+    <div id="profilesList" class="grid">
+      <article class="card">برای مشاهده پروفایل‌ها وارد حساب کاربری شو.</article>
+    </div>
+    <div id="profilesMessage" class="message" role="status"></div>
+  </div>
+</section>
 
-    const form = document.getElementById("accountForm");
-    const message = document.getElementById("message");
+<section id="safety">
+  <div class="container">
+    <h2 class="section-title">امنیت و حریم خصوصی</h2>
+    <div class="card">
+      <p>رمز عبورت را با کسی به اشتراک نگذار.</p>
+      <p>اطلاعات حساس و اطلاعات بانکی را در پروفایل عمومی قرار نده.</p>
+      <p>برای ملاقات حضوری، مکان عمومی را انتخاب کن و به رضایت دوطرفه احترام بگذار.</p>
+    </div>
+  </div>
+</section>
+</main>
 
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
+<footer>
+  <div class="container">
+    <strong>نزدیکا ✦</strong>
+    <p>آشنایی محترمانه، انتخاب آگاهانه 💚</p>
+  </div>
+</footer>
 
-      message.textContent =
-        "این فرم هنوز به سرور متصل نیست؛ هیچ حسابی ساخته یا اطلاعاتی ارسال نشد.";
+<script>
+"use strict";
 
-      message.style.color = "#8a4b12";
+/* آدرس Worker قبلی پروژه نزدیکا */
+const API_BASE = "https://nazdika-api.hakima09360.workers.dev";
+const TOKEN_KEY = "nazdika_token";
+
+const $ = id => document.getElementById(id);
+let currentUser = null;
+let heartbeatTimer = null;
+
+function getToken() {
+  return localStorage.getItem(TOKEN_KEY) || "";
+}
+
+function showMessage(id, text, isError = false) {
+  const el = $(id);
+  el.textContent = text;
+  el.style.color = isError ? "#b42318" : "#247342";
+}
+
+async function api(path, options = {}) {
+  const headers = { "Content-Type": "application/json" };
+  const token = getToken();
+  if (token) headers.Authorization = "Bearer " + token;
+
+  let response;
+  try {
+    response = await fetch(API_BASE + path, {
+      method: options.method || "GET",
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined
     });
-  </script>
+  } catch (error) {
+    throw new Error("اتصال به سرور برقرار نشد. آدرس Worker و وضعیت سرور را بررسی کن.");
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error("پاسخ سرور قابل خواندن نیست.");
+  }
+
+  if (!response.ok) {
+    const messages = {
+      INVALID_PHONE: "شماره موبایل معتبر نیست.",
+      INVALID_NAME: "نام نمایشی باید بین ۲ تا ۴۰ نویسه باشد.",
+      AGE_RESTRICTED: "ثبت‌نام فقط برای افراد ۱۸ تا ۱۰۰ سال مجاز است.",
+      INVALID_PROFILE: "شهر یا اطلاعات پروفایل معتبر نیست.",
+      INVALID_PASSWORD: "رمز عبور باید حداقل ۸ نویسه باشد.",
+      ACCOUNT_EXISTS: "این شماره قبلاً ثبت‌نام کرده است؛ وارد حساب شو.",
+      INVALID_CREDENTIALS: "شماره موبایل یا رمز عبور اشتباه است.",
+      UNAUTHORIZED: "نشست شما منقضی شده؛ دوباره وارد شو.",
+      DB_BINDING_MISSING: "اتصال پایگاه داده Worker تنظیم نشده است.",
+      PASSWORD_HASH_FAILED: "خطای رمزگذاری رمز عبور در سرور."
+    };
+    throw new Error(messages[data.error] || ("خطای سرور: " + (data.error || response.status)));
+  }
+  return data;
+}
+
+function showLoggedOut() {
+  $("accountPanel").classList.remove("hidden");
+  $("userPanel").classList.add("hidden");
+  $("registerFields").classList.toggle("hidden", $("mode").value === "login");
+  $("submitBtn").textContent = $("mode").value === "login" ? "ورود به حساب" : "ساخت حساب";
+}
+
+function showLoggedIn(user) {
+  currentUser = user;
+  $("accountPanel").classList.add("hidden");
+  $("userPanel").classList.remove("hidden");
+
+  const planNames = { free: "رایگان", plus: "پلاس", special: "ویژه" };
+  $("userInfo").replaceChildren();
+
+  const details = [
+    ["نام", user.displayName || "کاربر"],
+    ["سن", user.age || "—"],
+    ["شهر", user.city || "—"],
+    ["پلن", planNames[user.plan] || user.plan || "رایگان"]
+  ];
+
+  details.forEach(([label, value]) => {
+    const p = document.createElement("p");
+    const b = document.createElement("strong");
+    b.textContent = label + ": ";
+    p.append(b, document.createTextNode(String(value)));
+    $("userInfo").appendChild(p);
+  });
+
+  if (user.planUntil) {
+    const p = document.createElement("p");
+    p.textContent = "پایان اشتراک: " + user.planUntil;
+    $("userInfo").appendChild(p);
+  }
+  startHeartbeat();
+  loadProfiles();
+}
+
+$("mode").addEventListener("change", showLoggedOut);
+
+$("accountForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const isLogin = $("mode").value === "login";
+  const button = $("submitBtn");
+  button.disabled = true;
+  showMessage("message", "در حال ارتباط با سرور...");
+
+  try {
+    const body = {
+      phone: $("phone").value.trim(),
+      password: $("password").value
+    };
+
+    let path;
+    if (isLogin) {
+      path = "/api/login";
+    } else {
+      body.displayName = $("displayName").value.trim();
+      body.age = Number($("age").value);
+      body.city = $("city").value.trim();
+      body.about = $("about").value.trim();
+      path = "/api/register";
+    }
+
+    const result = await api(path, { method: "POST", body });
+
+    if (!result.token || !result.user) {
+      throw new Error("سرور توکن یا اطلاعات حساب را برنگرداند.");
+    }
+
+    localStorage.setItem(TOKEN_KEY, result.token);
+    $("password").value = "";
+    showMessage("message", isLogin ? "ورود موفق بود." : "حساب ساخته شد.");
+    showLoggedIn(result.user);
+  } catch (error) {
+    showMessage("message", error.message, true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+async function loadMe() {
+  if (!getToken()) {
+    showLoggedOut();
+    return;
+  }
+  try {
+    const result = await api("/api/me");
+    showLoggedIn(result.user);
+  } catch (error) {
+    localStorage.removeItem(TOKEN_KEY);
+    stopHeartbeat();
+    showLoggedOut();
+    showMessage("message", error.message, true);
+  }
+}
+
+async function loadProfiles() {
+  const list = $("profilesList");
+  list.replaceChildren();
+  const loading = document.createElement("article");
+  loading.className = "card";
+  loading.textContent = "در حال دریافت پروفایل‌ها...";
+  list.appendChild(loading);
+
+  try {
+    const result = await api("/api/profiles");
+    list.replaceChildren();
+
+    if (!result.profiles || result.profiles.length === 0) {
+      const empty = document.createElement("article");
+      empty.className = "card";
+      empty.textContent = "فعلاً پروفایل دیگری برای نمایش وجود ندارد.";
+      list.appendChild(empty);
+      return;
+    }
+
+    result.profiles.forEach(profile => {
+      const card = document.createElement("article");
+      card.className = "card profile";
+
+      const name = document.createElement("h3");
+      name.textContent = profile.displayName || "کاربر نزدیکا";
+
+      const city = document.createElement("p");
+      city.textContent = "شهر: " + (profile.city || "ثبت نشده");
+
+      const age = document.createElement("p");
+      age.textContent = "سن: " + (profile.age || "—");
+
+      const about = document.createElement("p");
+      about.textContent = profile.about || "توضیحی ثبت نشده است.";
+
+      const status = document.createElement("p");
+      status.className = profile.online ? "status online" : "status";
+      status.textContent = profile.online ? "● آنلاین" : "● آفلاین";
+
+      card.append(name, city, age, about, status);
+      list.appendChild(card);
+    });
+  } catch (error) {
+    list.replaceChildren();
+    const card = document.createElement("article");
+    card.className = "card";
+    card.textContent = error.message;
+    list.appendChild(card);
+  }
+}
+
+function startHeartbeat() {
+  stopHeartbeat();
+  const beat = async () => {
+    if (!getToken()) return;
+    try {
+      await api("/api/heartbeat", { method: "POST" });
+    } catch (error) {
+      if (error.message.includes("نشست شما منقضی")) {
+        localStorage.removeItem(TOKEN_KEY);
+        stopHeartbeat();
+        showLoggedOut();
+      }
+    }
+  };
+  beat();
+  heartbeatTimer = setInterval(beat, 60000);
+}
+
+function stopHeartbeat() {
+  if (heartbeatTimer) clearInterval(heartbeatTimer);
+  heartbeatTimer = null;
+}
+
+$("refreshProfiles").addEventListener("click", loadProfiles);
+
+$("logoutBtn").addEventListener("click", async () => {
+  try {
+    if (getToken()) await api("/api/logout", { method: "POST" });
+  } catch (_) {
+    /* توکن در مرورگر هم پاک می‌شود. */
+  }
+  localStorage.removeItem(TOKEN_KEY);
+  stopHeartbeat();
+  currentUser = null;
+  showLoggedOut();
+  $("profilesList").replaceChildren();
+  const card = document.createElement("article");
+  card.className = "card";
+  card.textContent = "برای مشاهده پروفایل‌ها وارد حساب کاربری شو.";
+  $("profilesList").appendChild(card);
+  showMessage("userMessage", "از حساب خارج شدی.");
+});
+
+document.querySelectorAll("[data-plan]").forEach(link => {
+  link.addEventListener("click", () => {
+    $("mode").value = "login";
+    showLoggedOut();
+    showMessage(
+      "message",
+      "برای درخواست اشتراک " +
+        (link.dataset.plan === "plus" ? "پلاس" : "ویژه") +
+        " ابتدا وارد حساب شو. پرداخت هنوز به سرور متصل نیست."
+    );
+  });
+});
+
+loadMe();
+</script>
 </body>
 </html>
