@@ -1,561 +1,356 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#123c32">
-  <meta name="description" content="نزدیکا؛ فضایی برای آشنایی محترمانه، ساخت پروفایل و پیدا کردن ارتباطی سازگار.">
-  <meta name="robots" content="index,follow">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="نزدیکا">
 
-  <title>نزدیکا | آشنایی واقعی، ارتباط محترمانه</title>
-
-  <link rel="manifest" href="./%D9%85%D8%A7%D9%86%DB%8C%D9%81%D8%B3%D8%AA.json">
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon-512.png">
-
-  <style>
-    :root {
-      --green: #123c32;
-      --green2: #1d5a49;
-      --lime: #d9f36a;
-      --bg: #f7f8f4;
-      --text: #17251f;
-      --muted: #69766f;
-      --border: #e4e9e1;
-      --white: #fff;
-    }
-
-    * { box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 90px;
-    }
-
-    body {
-      margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.9;
-    }
-
-    button, input, select, textarea { font: inherit; }
-    button { cursor: pointer; }
-    a { color: inherit; text-decoration: none; }
-
-    .wrap {
-      width: min(1100px, 92%);
-      margin: auto;
-    }
-
-    header {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .nav {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-      padding: 12px 0;
-    }
-
-    .brand {
-      font-size: 23px;
-      font-weight: bold;
-      color: var(--green);
-    }
-
-    .links {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      flex-wrap: wrap;
-      font-size: 14px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 13px;
-      padding: 11px 18px;
-      background: var(--green);
-      color: white;
-      font-weight: bold;
-      display: inline-block;
-    }
-
-    .btn:hover { background: var(--green2); }
-
-    .btn-light {
-      background: var(--lime);
-      color: var(--green);
-    }
-
-    .btn-outline {
-      background: white;
-      color: var(--green);
-      border: 1px solid var(--border);
-    }
-
-    .hero {
-      margin-top: 28px;
-      padding: 48px 26px;
-      border-radius: 26px;
-      background: var(--green);
-      color: white;
-      overflow: hidden;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 28px;
-      align-items: center;
-    }
-
-    .hero h1 {
-      font-size: clamp(27px, 5vw, 43px);
-      line-height: 1.6;
-      margin: 0 0 14px;
-    }
-
-    .hero p {
-      color: #e0e9e2;
-      max-width: 570px;
-    }
-
-    .hero-art {
-      background: #1d5144;
-      border: 1px solid #477263;
-      border-radius: 24px;
-      padding: 25px;
-      text-align: center;
-    }
-
-    .heart {
-      font-size: 75px;
-      line-height: 1.5;
-    }
-
-    .art-label {
-      background: #fff;
-      color: var(--green);
-      border-radius: 14px;
-      padding: 12px;
-      margin-top: 12px;
-    }
-
-    section { padding: 38px 0; }
-
-    .section-head { margin-bottom: 20px; }
-
-    .section-head h2 {
-      margin: 0 0 5px;
-      font-size: 25px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 21px;
-      min-width: 0;
-    }
-
-    .price {
-      font-size: 27px;
-      font-weight: bold;
-      color: var(--green);
-      margin: 10px 0;
-    }
-
-    .price small {
-      font-size: 13px;
-      font-weight: normal;
-      color: var(--muted);
-    }
-
-    .features {
-      padding-right: 20px;
-      font-size: 14px;
-    }
-
-    .features li { margin: 7px 0; }
-
-    .popular { border: 2px solid var(--green); }
-
-    .tag {
-      display: inline-block;
-      background: #eff5d8;
-      color: var(--green);
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-    }
-
-    .form-card {
-      max-width: 580px;
-      margin: auto;
-    }
-
-    .field { margin: 13px 0; }
-
-    label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #dce3db;
-      border-radius: 12px;
-      background: white;
-      color: var(--text);
-      outline-color: var(--green2);
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    input[type="checkbox"] {
-      width: auto;
-      accent-color: var(--green);
-    }
-
-    .notice {
-      background: #fff8e7;
-      color: #72561c;
-      border: 1px solid #f2e3b9;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 13px;
-      margin: 14px 0;
-    }
-
-    .hidden { display: none !important; }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 15px;
-    }
-
-    footer {
-      background: #102e27;
-      color: white;
-      margin-top: 30px;
-      padding: 28px 0;
-    }
-
-    footer p {
-      color: #d1dfd7;
-      font-size: 13px;
-    }
-
-    .toast {
-      margin-top: 12px;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    @media (max-width: 720px) {
-      .hero-grid, .grid { grid-template-columns: 1fr; }
-      .hero { padding: 30px 20px; }
-      .links { gap: 11px; font-size: 13px; }
-      .nav { align-items: flex-start; }
-      .hero-art { padding: 18px; }
-    }
-  </style>
-</head>
-
-<body>
-<header>
-  <div class="wrap nav">
-    <a class="brand" href="#home">نزدیکا ✦</a>
-    <nav class="links" aria-label="منوی اصلی">
-      <a href="#how">نحوه کار</a>
-      <a href="#plans">اشتراک‌ها</a>
-      <a href="#account">حساب کاربری</a>
-    </nav>
-    <a class="btn btn-light" href="#account">شروع آشنایی</a>
-  </div>
-</header>
-
-<main class="wrap">
-  <section class="hero" id="home">
-    <div class="hero-grid">
-      <div>
-        <span class="tag">ارتباط محترمانه، انتخاب آگاهانه</span>
-        <h1>نزدیکا؛ برای آشنایی‌هایی که معنا دارند 💚</h1>
-        <p>
-          پروفایل خودت را بساز، علایقت را معرفی کن و برای پیدا کردن
-          ارتباطی سازگار قدم بردار. حریم خصوصی و رضایت دوطرفه مهم‌اند.
-        </p>
-        <div class="actions">
-          <a class="btn btn-light" href="#account">ساخت حساب کاربری</a>
-          <a class="btn btn-outline" href="#plans">مشاهده اشتراک‌ها</a>
-        </div>
-      </div>
-      <div class="hero-art" aria-label="تصویر نمادین نزدیکا">
-        <div class="heart">💚</div>
-        <h3>یک شروع تازه</h3>
-        <div class="art-label">اول شناخت، بعد ارتباط</div>
-        <div class="art-label">با احترام به انتخاب یکدیگر</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="how">
-    <div class="section-head">
-      <h2>نزدیکا چطور کار می‌کند؟</h2>
-      <p class="muted">مسیر آشنایی باید روشن، محترمانه و امن باشد.</p>
-    </div>
-    <div class="grid">
-      <article class="card">
-        <h3>۱. معرفی خودت</h3>
-        <p class="muted">اطلاعات و علایق مناسب برای پروفایل را وارد کن.</p>
-      </article>
-      <article class="card">
-        <h3>۲. انتخاب آگاهانه</h3>
-        <p class="muted">پروفایل‌ها را بررسی کن و فقط در صورت تمایل علاقه نشان بده.</p>
-      </article>
-      <article class="card">
-        <h3>۳. ارتباط دوطرفه</h3>
-        <p class="muted">گفت‌وگو باید با رضایت دو طرف و پس از فعال‌شدن سامانه انجام شود.</p>
-      </article>
-    </div>
-  </section>
-
-  <section id="plans">
-    <div class="section-head">
-      <h2>پلن‌های نزدیکا</h2>
-      <p class="muted">اشتراک‌های پولی برای ۳۰ روز تعریف شده‌اند.</p>
-    </div>
-
-    <div class="grid">
-      <article class="card">
-        <h3>رایگان</h3>
-        <div class="price">۰ <small>تومان</small></div>
-        <ul class="features">
-          <li>ساخت حساب پایه</li>
-          <li>تکمیل پروفایل</li>
-          <li>امکانات محدود</li>
-        </ul>
-        <a class="btn btn-outline" href="#account">شروع رایگان</a>
-      </article>
-
-      <article class="card popular">
-        <span class="tag">انتخاب اقتصادی</span>
-        <h3>پلاس</h3>
-        <div class="price">۱۹۹٬۰۰۰ <small>تومان / ۳۰ روز</small></div>
-        <ul class="features">
-          <li>امکانات بیشتر نسبت به رایگان</li>
-          <li>مدت اشتراک ۳۰ روز</li>
-          <li>فعال‌سازی پس از تأیید پرداخت</li>
-        </ul>
-        <button class="btn" type="button" onclick="choosePlan('plus')">درخواست پلاس</button>
-      </article>
-
-      <article class="card">
-        <h3>ویژه</h3>
-        <div class="price">۳۹۹٬۰۰۰ <small>تومان / ۳۰ روز</small></div>
-        <ul class="features">
-          <li>امکانات ویژه تعریف‌شده در سامانه</li>
-          <li>مدت اشتراک ۳۰ روز</li>
-          <li>فعال‌سازی پس از تأیید پرداخت</li>
-        </ul>
-        <button class="btn" type="button" onclick="choosePlan('special')">درخواست ویژه</button>
-      </article>
-    </div>
-
-    <div class="notice">
-      پرداخت و فعال‌سازی اشتراک هنوز به سرور متصل نیست.
-      تا زمان تکمیل و آزمایش پرداخت واقعی، هیچ وجهی واریز نکنید.
-    </div>
-  </section>
-
-  <section id="account">
-    <div class="card form-card">
-      <div class="section-head">
-        <h2>حساب کاربری</h2>
-        <p class="muted">فرم پس از اتصال و آزمایش سرور فعال خواهد شد.</p>
-      </div>
-
-      <div class="notice">
-        این نسخه هنوز فرم را به سرور ارسال نمی‌کند. رمز واقعی خود را تا فعال‌شدن اتصال وارد نکنید.
-      </div>
-
-      <form id="accountForm">
-        <div class="field">
-          <label for="mode">نوع درخواست</label>
-          <select id="mode">
-            <option value="register">ساخت حساب</option>
-            <option value="login">ورود به حساب</option>
-          </select>
-        </div>
-
-        <div class="field" id="nameField">
-          <label for="displayName">نام نمایشی</label>
-          <input id="displayName" maxlength="40" placeholder="مثلاً سارا" autocomplete="nickname">
-        </div>
-
-        <div class="field">
-          <label for="phone">شماره موبایل</label>
-          <input id="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="15" placeholder="شماره موبایل">
-        </div>
-
-        <div class="field" id="ageField">
-          <label for="age">سن</label>
-          <input id="age" type="number" min="18" max="100" placeholder="سن شما">
-        </div>
-
-        <div class="field" id="cityField">
-          <label for="city">شهر</label>
-          <input id="city" maxlength="60" placeholder="شهر محل سکونت">
-        </div>
-
-        <div class="field" id="aboutField">
-          <label for="about">معرفی کوتاه</label>
-          <textarea id="about" maxlength="500" placeholder="علایق و ویژگی‌های خودت را بنویس"></textarea>
-        </div>
-
-        <div class="field">
-          <label for="password">رمز عبور</label>
-          <input id="password" type="password" autocomplete="new-password" minlength="8" placeholder="حداقل ۸ نویسه">
-        </div>
-
-        <label style="display:flex;gap:9px;align-items:flex-start;font-weight:normal">
-          <input id="adult" type="checkbox" style="margin-top:7px">
-          تأیید می‌کنم حداقل ۱۸ سال دارم و قوانین و حریم خصوصی را می‌پذیرم.
-        </label>
-
-        <div class="actions">
-          <button class="btn" type="submit">ادامه</button>
-          <button class="btn btn-outline" type="reset">پاک کردن فرم</button>
-        </div>
-
-        <p id="formMessage" class="toast" role="status" aria-live="polite"></p>
-      </form>
-    </div>
-  </section>
-
-  <section id="safety">
-    <div class="card">
-      <h2>امنیت و حریم خصوصی</h2>
-      <ul class="features">
-        <li>نزدیکا برای افراد ۱۸ سال به بالا در نظر گرفته شده است.</li>
-        <li>شماره موبایل بدون رضایت کاربر به دیگران نمایش داده نمی‌شود.</li>
-        <li>گزارش تخلف، مسدودسازی و حذف حساب باید در نسخه عملیاتی آزمایش شوند.</li>
-        <li>اطلاعات حساس و پرداخت نباید در کد عمومی سایت قرار بگیرند.</li>
-      </ul>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
-    <div class="brand" style="color:#d9f36a">نزدیکا ✦</div>
-    <p>فضایی برای آشنایی محترمانه و انتخاب آگاهانه.</p>
-    <p>ثبت‌نام، گفت‌وگو و اشتراک پس از اتصال و آزمایش سرور فعال خواهند شد.</p>
-    <p>© <span id="year"></span> نزدیکا</p>
-  </div>
-</footer>
-
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  const mode = document.getElementById("mode");
-  const nameField = document.getElementById("nameField");
-  const ageField = document.getElementById("ageField");
-  const cityField = document.getElementById("cityField");
-  const aboutField = document.getElementById("aboutField");
-  const formMessage = document.getElementById("formMessage");
-
-  function updateFormMode() {
-    const isLogin = mode.value === "login";
-    nameField.classList.toggle("hidden", isLogin);
-    ageField.classList.toggle("hidden", isLogin);
-    cityField.classList.toggle("hidden", isLogin);
-    aboutField.classList.toggle("hidden", isLogin);
-    document.getElementById("password").setAttribute(
-      "autocomplete", isLogin ? "current-password" : "new-password"
-    );
-  }
-
-  mode.addEventListener("change", updateFormMode);
-  updateFormMode();
-
-  document.getElementById("accountForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const age = Number(document.getElementById("age").value);
-    const phone = document.getElementById("phone").value.trim();
-    const password = document.getElementById("password").value;
-    const adult = document.getElementById("adult").checked;
-
-    if (!adult) {
-      formMessage.textContent = "برای ادامه باید تأیید کنید که حداقل ۱۸ سال دارید.";
-      return;
-    }
-
-    if (!phone || password.length < 8) {
-      formMessage.textContent = "شماره موبایل و رمز عبور حداقل ۸ نویسه‌ای را بررسی کنید.";
-      return;
-    }
-
-    if (mode.value === "register") {
-      const name = document.getElementById("displayName").value.trim();
-
-      if (name.length < 2) {
-        formMessage.textContent = "نام نمایشی را وارد کنید.";
-        return;
-      }
-
-      if (!Number.isInteger(age) || age < 18 || age > 100) {
-        formMessage.textContent = "ثبت‌نام فقط برای افراد ۱۸ سال به بالا است.";
-        return;
-      }
-    }
-
-    formMessage.textContent =
-      "اتصال واقعی حساب هنوز تکمیل نشده است؛ اطلاعات واردشده ذخیره یا ارسال نشد.";
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "https://hakima659.github.io",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Content-Type": "application/json; charset=utf-8",
+  "Cache-Control": "no-store"
+};
+
+const json = (data, status = 200) =>
+  new Response(JSON.stringify(data), {
+    status,
+    headers: CORS_HEADERS
   });
 
-  function choosePlan(plan) {
-    document.getElementById("account").scrollIntoView({ behavior: "smooth" });
-    const names = { plus: "پلاس", special: "ویژه" };
-    formMessage.textContent =
-      "پلن انتخاب‌شده: " + names[plan] +
-      ". پرداخت تا تکمیل و آزمایش سامانه فعال نیست.";
+async function initializeDB(db) {
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      phone TEXT NOT NULL UNIQUE,
+      display_name TEXT NOT NULL,
+      age INTEGER NOT NULL,
+      city TEXT NOT NULL,
+      about TEXT NOT NULL DEFAULT '',
+      salt TEXT NOT NULL,
+      password_hash TEXT NOT NULL,
+      plan TEXT NOT NULL DEFAULT 'free',
+      plan_until TEXT,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      last_seen INTEGER NOT NULL DEFAULT 0
+    )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS sessions (
+      token_hash TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      expires_at INTEGER NOT NULL,
+      FOREIGN KEY(user_id) REFERENCES users(id)
+    )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS subscription_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      plan TEXT NOT NULL,
+      amount INTEGER NOT NULL,
+      reference TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(user_id) REFERENCES users(id)
+    )`)
+  ]);
+}
+
+const encoder = new TextEncoder();
+
+function toBase64(bytes) {
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
+
+function fromBase64(value) {
+  return Uint8Array.from(atob(value), c => c.charCodeAt(0));
+}
+
+async function hashPassword(password, salt) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"]
+  );
+
+  const bits = await crypto.subtle.deriveBits({
+    name: "PBKDF2",
+    salt,
+    iterations: 100000,
+    hash: "SHA-256"
+  }, key, 256);
+
+  return toBase64(new Uint8Array(bits));
+}
+
+async function sha256(value) {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    encoder.encode(value)
+  );
+  return toBase64(new Uint8Array(digest));
+}
+
+function normalizePhone(value) {
+  let phone = String(value || "").replace(/[\s()-]/g, "");
+  if (phone.startsWith("+98")) phone = "0" + phone.slice(3);
+  if (phone.startsWith("0098")) phone = "0" + phone.slice(4);
+  if (/^9\d{9}$/.test(phone)) phone = "0" + phone;
+  return phone;
+}
+
+function validIranPhone(phone) {
+  return /^09\d{9}$/.test(phone);
+}
+
+async function readBody(request) {
+  try {
+    return await request.json();
+  } catch {
+    return null;
   }
-</script>
-</body>
-</html>
+}
+
+async function getUser(request, db) {
+  const auth = request.headers.get("Authorization") || "";
+  const match = auth.match(/^Bearer ([A-Za-z0-9_-]{40,100})$/);
+  if (!match) return null;
+
+  const tokenHash = await sha256(match[1]);
+  const now = Math.floor(Date.now() / 1000);
+
+  const session = await db.prepare(`
+    SELECT users.id, users.phone, users.display_name,
+           users.age, users.city, users.about, users.plan,
+           users.plan_until
+    FROM sessions
+    JOIN users ON users.id = sessions.user_id
+    WHERE sessions.token_hash = ?
+      AND sessions.expires_at > ?
+  `).bind(tokenHash, now).first();
+
+  if (!session) return null;
+
+  await db.prepare(
+    "UPDATE users SET last_seen = ? WHERE id = ?"
+  ).bind(now, session.id).run();
+
+  return session;
+}
+
+async function handle(request, env) {
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+  }
+
+  if (!env.DB) return json({ error: "DB_BINDING_MISSING" }, 500);
+
+  const url = new URL(request.url);
+  const path = url.pathname;
+
+  try {
+    await initializeDB(env.DB);
+
+    if (request.method === "GET" && path === "/health") {
+      return json({ ok: true, service: "nazdika-api" });
+    }
+
+    if (request.method === "POST" && path === "/api/register") {
+      const body = await readBody(request);
+      if (!body) return json({ error: "INVALID_JSON" }, 400);
+
+      const phone = normalizePhone(body.phone);
+      const name = String(body.displayName || "").trim();
+      const city = String(body.city || "").trim();
+      const about = String(body.about || "").trim();
+      const age = Number(body.age);
+      const password = String(body.password || "");
+
+      if (!validIranPhone(phone))
+        return json({ error: "INVALID_PHONE" }, 400);
+
+      if (name.length < 2 || name.length > 40)
+        return json({ error: "INVALID_NAME" }, 400);
+
+      if (!Number.isInteger(age) || age < 18 || age > 100)
+        return json({ error: "AGE_RESTRICTED" }, 400);
+
+      if (!city || city.length > 60 || about.length > 500)
+        return json({ error: "INVALID_PROFILE" }, 400);
+
+      if (password.length < 8 || password.length > 128)
+        return json({ error: "INVALID_PASSWORD" }, 400);
+
+      const existing = await env.DB.prepare(
+        "SELECT id FROM users WHERE phone = ?"
+      ).bind(phone).first();
+
+      if (existing)
+        return json({ error: "ACCOUNT_EXISTS" }, 409);
+
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const passwordHash = await hashPassword(password, salt);
+
+      const result = await env.DB.prepare(`
+        INSERT INTO users
+          (phone, display_name, age, city, about, salt, password_hash)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        phone, name, age, city, about,
+        toBase64(salt), passwordHash
+      ).run();
+
+      const userId = result.meta.last_row_id;
+      const token = toBase64(crypto.getRandomValues(new Uint8Array(32)))
+        .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+      const tokenHash = await sha256(token);
+      const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+
+      await env.DB.prepare(`
+        INSERT INTO sessions (token_hash, user_id, expires_at)
+        VALUES (?, ?, ?)
+      `).bind(tokenHash, userId, expires).run();
+
+      await env.DB.prepare(
+        "UPDATE users SET last_seen = ? WHERE id = ?"
+      ).bind(Math.floor(Date.now() / 1000), userId).run();
+
+      return json({
+        ok: true,
+        token,
+        user: {
+          id: userId,
+          displayName: name,
+          age,
+          city,
+          about,
+          plan: "free"
+        }
+      }, 201);
+    }
+
+    if (request.method === "POST" && path === "/api/login") {
+      const body = await readBody(request);
+      if (!body) return json({ error: "INVALID_JSON" }, 400);
+
+      const phone = normalizePhone(body.phone);
+      const password = String(body.password || "");
+
+      if (!validIranPhone(phone) || !password || password.length > 128)
+        return json({ error: "INVALID_CREDENTIALS" }, 400);
+
+      const user = await env.DB.prepare(
+        "SELECT * FROM users WHERE phone = ?"
+      ).bind(phone).first();
+
+      if (!user)
+        return json({ error: "INVALID_CREDENTIALS" }, 401);
+
+      const calculated = await hashPassword(
+        password, fromBase64(user.salt)
+      );
+
+      if (calculated !== user.password_hash)
+        return json({ error: "INVALID_CREDENTIALS" }, 401);
+
+      const token = toBase64(crypto.getRandomValues(new Uint8Array(32)))
+        .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+      const tokenHash = await sha256(token);
+      const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+
+      await env.DB.prepare(`
+        INSERT INTO sessions (token_hash, user_id, expires_at)
+        VALUES (?, ?, ?)
+      `).bind(tokenHash, user.id, expires).run();
+
+      await env.DB.prepare(
+        "UPDATE users SET last_seen = ? WHERE id = ?"
+      ).bind(Math.floor(Date.now() / 1000), user.id).run();
+
+      return json({
+        ok: true,
+        token,
+        user: {
+          id: user.id,
+          displayName: user.display_name,
+          age: user.age,
+          city: user.city,
+          about: user.about,
+          plan: user.plan
+        }
+      });
+    }
+
+    if (request.method === "GET" && path === "/api/me") {
+      const user = await getUser(request, env.DB);
+      if (!user) return json({ error: "UNAUTHORIZED" }, 401);
+
+      return json({
+        ok: true,
+        user: {
+          id: user.id,
+          displayName: user.display_name,
+          age: user.age,
+          city: user.city,
+          about: user.about,
+          plan: user.plan,
+          planUntil: user.plan_until
+        }
+      });
+    }
+
+    if (request.method === "POST" && path === "/api/logout") {
+      const auth = request.headers.get("Authorization") || "";
+      const match = auth.match(/^Bearer ([A-Za-z0-9_-]{40,100})$/);
+
+      if (match) {
+        await env.DB.prepare(
+          "DELETE FROM sessions WHERE token_hash = ?"
+        ).bind(await sha256(match[1])).run();
+      }
+
+      return json({ ok: true });
+    }
+
+    if (request.method === "GET" && path === "/api/profiles") {
+      const user = await getUser(request, env.DB);
+      if (!user) return json({ error: "UNAUTHORIZED" }, 401);
+
+      const now = Math.floor(Date.now() / 1000);
+      const result = await env.DB.prepare(`
+        SELECT id, display_name, age, city, about,
+          CASE WHEN last_seen >= ? THEN 1 ELSE 0 END AS online
+        FROM users
+        WHERE id != ?
+        ORDER BY last_seen DESC
+        LIMIT 50
+      `).bind(now - 120, user.id).all();
+
+      return json({
+        ok: true,
+        profiles: result.results.map(p => ({
+          id: p.id,
+          displayName: p.display_name,
+          age: p.age,
+          city: p.city,
+          about: p.about,
+          online: Boolean(p.online)
+        }))
+      });
+    }
+
+    if (request.method === "POST" && path === "/api/heartbeat") {
+      const user = await getUser(request, env.DB);
+      if (!user) return json({ error: "UNAUTHORIZED" }, 401);
+
+      return json({ ok: true, timestamp: Math.floor(Date.now() / 1000) });
+    }
+
+    return json({ error: "NOT_FOUND" }, 404);
+  } catch (error) {
+    console.error("Nazdika API error:", error);
+    return json({ error: "INTERNAL_ERROR" }, 500);
+  }
+}
+
+export default {
+  async fetch(request, env) {
+    return handle(request, env);
+  }
+};
